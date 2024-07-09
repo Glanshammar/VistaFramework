@@ -11,6 +11,9 @@ endif()
 set(CMAKE_TOOLCHAIN_FILE "${USER_HOME}/.vcpkg-clion/VistaFW/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
 link_directories("${USER_HOME}/.vcpkg-clion/VistaFW/installed/x64-windows/debug/lib")
 
+include_directories("Vista/include/Vista/")
+include_directories("Vista/")
+
 find_package(Vulkan REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(Libssh2 CONFIG REQUIRED)
@@ -46,7 +49,7 @@ set(LIBRARIES
 add_library(VistaFramework STATIC
         "Vista/Graphics/vulkangui.cpp"
         "Vista/GUI/VConsole.cpp" "Vista/GUI/VConsole.hpp"
-        "Vista/VObject.cpp" "Vista/VObject.hpp"
+        "Vista/Core/VObject.cpp" "Vista/Core/VObject.hpp"
         "Vista/Serials/VSerialBus.cpp" "Vista/Serials/VSerialBus.hpp"
         "Vista/Serials/VSerialPort.cpp" "Vista/Serials/VSerialPort.hpp"
         "Vista/Core/VThread.cpp" "Vista/Core/VThread.hpp"
