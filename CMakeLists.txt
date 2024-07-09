@@ -44,14 +44,13 @@ set(LIBRARIES
 )
 
 add_library(VistaFramework STATIC
-        "Vista/Vulkan/vulkangui.cpp"
+        "Vista/Graphics/vulkangui.cpp"
         "Vista/GUI/VConsole.cpp" "Vista/GUI/VConsole.hpp"
         "Vista/VObject.cpp" "Vista/VObject.hpp"
         "Vista/Serials/VSerialBus.cpp" "Vista/Serials/VSerialBus.hpp"
         "Vista/Serials/VSerialPort.cpp" "Vista/Serials/VSerialPort.hpp"
         "Vista/Core/VThread.cpp" "Vista/Core/VThread.hpp"
-        Vista/Core/Filesystem/VFile.cpp
-        Vista/Core/Filesystem/VFile.hpp
+        "Vista/Core/Filesystem/VFile.cpp" "Vista/Core/Filesystem/VFile.hpp"
 )
 target_link_libraries(VistaFramework
         PUBLIC
