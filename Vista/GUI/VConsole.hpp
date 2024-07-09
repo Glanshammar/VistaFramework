@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../VObject.hpp"
+#include <VObject>
 
 enum class Color {
     RED,
