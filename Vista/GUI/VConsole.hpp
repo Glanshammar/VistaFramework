@@ -3,39 +3,40 @@
 #include "../VObject.hpp"
 
 enum class Color {
-    DEFAULT,
     RED,
     GREEN,
     BLUE,
     YELLOW,
     CYAN,
     MAGENTA,
-    WHITE
+    WHITE,
+    DEFAULT
 };
 
+enum class Level {
+    Info,
+    Warning,
+    Error
+};
 
-class VConsole : public VObject {
-public:
-    VConsole() = default;
-    ~VConsole();
+void setTextColor(Color color);
+void VDebug(Level level, const std::string& message, bool newline = true);
 
-    void setTextColor(Color color);
+// Base case for the variadic template function
+inline void VPrint(const std::ostringstream &oss) {
+    std::cout << oss.str();
+}
 
-    void log();
+// Recursive variadic template function
+template<typename T, typename... Args>
+void VPrint(std::ostringstream &oss, T first, Args... args) {
+    oss << first;
+    vPrint(oss, args...);
+}
 
-    // Variadic template function to handle multiple arguments
-    template <typename First, typename... Rest>
-    void log(const First& first, const Rest&... rest);
-
-    template <typename... Args>
-    void Print(Args&&... args) {
-        log(std::forward<Args>(args)...);
-    }
-
-private:
+// Entry point for the variadic print function
+template<typename... Args>
+void VPrint(Args... args) {
     std::ostringstream oss;
-
-    // Handle argument and check if it's a color
-    void handleArgument(const std::string& text);
-    void handleArgument(Color color);
-};
+    vPrint(oss, args...);
+}
