@@ -68,7 +68,10 @@ target_link_libraries(VistaLoader
 )
 
 add_executable(VistaTest
-        "Vista/.tests/consoletest.cpp"
+        "Vista/.tests/TestMain.cpp"
+        "Vista/.tests/PlatformTest.cpp" "Vista/.tests/PlatformTest.hpp"
+        "Vista/.tests/ConsoleTest.cpp" "Vista/.tests/ConsoleTest.hpp"
+
 )
 target_link_libraries(VistaTest
         PUBLIC
