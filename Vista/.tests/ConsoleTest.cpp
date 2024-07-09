@@ -1,12 +1,13 @@
 #include "../GUI/VConsole.hpp"
+#include "ConsoleTest.hpp"
 
 
-int main() {
+void ConsoleTest(){
     int testValue = 42;
 
     VDebug(Level::Info, "This is an informational message.");
     VDebug(Level::Warning, "Value might be out of range: " + std::to_string(testValue));
     VDebug(Level::Error, "Critical error occurred!");
-    VPrint("Hello world! ", testValue, " Yo mama");
-    std::cin.ignore();
+    VPrint("Hello world! ", testValue, " Yo mama!");
+    VPrint("Bye world! ", testValue * 2, " Yo papa!");
 }

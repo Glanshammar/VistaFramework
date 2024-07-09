@@ -24,19 +24,19 @@ void VDebug(Level level, const std::string& message, bool newline = true);
 
 // Base case for the variadic template function
 inline void VPrint(const std::ostringstream &oss) {
-    std::cout << oss.str();
+    std::cout << oss.str() << std::endl;
 }
 
 // Recursive variadic template function
 template<typename T, typename... Args>
 void VPrint(std::ostringstream &oss, T first, Args... args) {
     oss << first;
-    vPrint(oss, args...);
+    VPrint(oss, args...);
 }
 
 // Entry point for the variadic print function
 template<typename... Args>
 void VPrint(Args... args) {
     std::ostringstream oss;
-    vPrint(oss, args...);
+    VPrint(oss, args...);
 }

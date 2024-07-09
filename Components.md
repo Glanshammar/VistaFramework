@@ -1,4 +1,4 @@
-This is a list that shows the components of the Vista Framework. Not all have been implemented but this list also shows the future components.
+This is a list that shows the components of the Vista Framework. Not all have been implemented but this list also shows future components.
 
 # Core
 * Cross-platform support
@@ -7,6 +7,7 @@ This is a list that shows the components of the Vista Framework. Not all have be
   * MacOS
   * Android
   * iOS
+  * IoT devices
 * Thread
   * Multithreading support
   * Thread synchronization mechanisms
