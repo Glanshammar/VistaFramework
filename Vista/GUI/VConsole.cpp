@@ -1,12 +1,6 @@
 #include "VConsole.hpp"
 
-
-
-VConsole::~VConsole() {
-    std::cerr << oss.str() << std::endl;
-}
-
-void VConsole::setTextColor(Color color) {
+void setTextColor(Color color) {
 #if defined(_WIN32) || defined(_WIN64)
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     switch (color) {
@@ -67,21 +61,32 @@ void VConsole::setTextColor(Color color) {
 #endif
 }
 
-void VConsole::log() {}
+void VDebug(Level level, const std::string& message, bool newline) {
+    std::ostringstream formattedMessage;
 
-template <typename First, typename... Rest>
-void VConsole::log(const First& first, const Rest&... rest) {
-    handleArgument(first);
-    if constexpr (sizeof...(rest) > 0) {
-        oss << ", "; // Separate with comma
-        log(rest...); // Recursively call log for remaining arguments
+    switch (level) {
+    case Level::Info:
+        setTextColor(Color::GREEN);
+        formattedMessage << "[INFO] ";
+        break;
+    case Level::Warning:
+        setTextColor(Color::YELLOW);
+        formattedMessage << "[WARNING] ";
+        break;
+    case Level::Error:
+        setTextColor(Color::RED);
+        formattedMessage << "[ERROR] ";
+        break;
+    default:
+        break;
     }
-}
 
-void VConsole::handleArgument(const std::string& text) {
-    oss << text;
-}
+    formattedMessage << message;
 
-void VConsole::handleArgument(Color color) {
-    setTextColor(color);
+    if (newline) {
+        formattedMessage << std::endl;
+    }
+
+    cout << formattedMessage.str();
+    setTextColor(Color::DEFAULT);
 }
