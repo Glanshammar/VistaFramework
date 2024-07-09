@@ -11,6 +11,7 @@
 #include <fstream>
 #include <sstream>
 
+#define vObject constexpr std::unique_ptr<VObject>
 
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
@@ -21,8 +22,12 @@ using std::vector;
 using std::cout;
 
 class VObject {
-public:
+private:
     string objectName;
 
-    void setName(const string& name);
+public:
+    void SetName(const string& name);
+    static bool Connect(const VObject& object);
+    static bool Disconnect(const VObject& object);
+
 };
