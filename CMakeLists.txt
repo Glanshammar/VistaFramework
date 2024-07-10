@@ -12,7 +12,6 @@ set(CMAKE_TOOLCHAIN_FILE "${USER_HOME}/.vcpkg-clion/VistaFW/scripts/buildsystems
 link_directories("${USER_HOME}/.vcpkg-clion/VistaFW/installed/x64-windows/debug/lib")
 
 include_directories("Vista/include/Vista/")
-include_directories("Vista/")
 
 find_package(Vulkan REQUIRED)
 find_package(glfw3 REQUIRED)
@@ -54,6 +53,7 @@ add_library(VistaFramework STATIC
         "Vista/Serials/VSerialPort.cpp" "Vista/Serials/VSerialPort.hpp"
         "Vista/Core/VThread.cpp" "Vista/Core/VThread.hpp"
         "Vista/Core/Filesystem/VFile.cpp" "Vista/Core/Filesystem/VFile.hpp"
+        "Vista/Core/VString.cpp" "Vista/Core/VString.hpp"
 )
 target_link_libraries(VistaFramework
         PUBLIC
