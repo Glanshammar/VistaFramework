@@ -1,11 +1,11 @@
 # Vista Framework
 
 ## Overview
-Vista is a powerful C++ framework designed to empower developers with a rich set of tools and libraries for building versatile and high-performance applications. Spanning diverse platforms and domains, Vista ensures seamless development from GUI applications to embedded systems, incorporating advanced features without compromise.
+Vista is an advanced framework designed to empower developers in creating high-performance applications with ease. It offers a comprehensive suite of tools and libraries tailored to modern software development needs.
 
 ## Features
 ### Core Functionality
-Vista supports cross-platform development across Windows, Linux, MacOS, Android, iOS, and IoT devices. It includes robust multithreading capabilities with thread management, synchronization mechanisms, and efficient thread pools. Filesystem operations cover comprehensive file and directory management, including file permissions.
+Vista supports cross-platform development across Windows, Linux, macOS, Android, iOS, and IoT devices. It includes robust multithreading capabilities with thread management, synchronization mechanisms, and efficient thread pools. Filesystem operations cover comprehensive file and directory management.
 
 ### Console and Debugging
 Facilitating command-line interaction, Vista provides extensive console input/output functionalities and sophisticated command-line argument parsing. Debugging tools include robust logging utilities for application monitoring and debugging.
