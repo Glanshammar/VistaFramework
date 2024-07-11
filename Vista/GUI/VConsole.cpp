@@ -87,6 +87,6 @@ void VDebug(Level level, const std::string& message, bool newline) {
         formattedMessage << std::endl;
     }
 
-    cout << formattedMessage.str();
+    std::cout << formattedMessage.str();
     setTextColor(Color::DEFAULT);
 }
