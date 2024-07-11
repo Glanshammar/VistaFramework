@@ -5,12 +5,15 @@
 #include <chrono>
 
 class VThread : public VObject {
+private:
+    std::thread thread;
 public:
-    VThread() = default;
+    explicit VThread(const std::function<void()>& functionName);
+    explicit VThread(VObject* object);
     ~VThread();
 
-    void start();
-    void stop();
+    static void start();
+    static void stop();
 
-    void sleep(int milliseconds);
+    static void sleep(int milliseconds);
 };
