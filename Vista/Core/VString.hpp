@@ -1,37 +1,61 @@
 #pragma once
 
-#include <VObject>
 #include <cstring>
+#include <stdexcept>
+#include <iostream>
+#include <string>
+#include <codecvt>
+#include <locale>
 
 class VString {
 public:
     // Constructors
     VString();
-    VString(const char *str);
-    VString(const VString &other);
+    explicit VString(const char16_t* str);
+    VString(const char* str);
+    VString(const std::string& str);
+    VString(const VString& other);
+    VString(VString&& other) noexcept;
 
     // Destructor
     ~VString();
 
-    // Assignment operator
-    VString& operator=(const VString &other);
+    // Assignment Operators
+    VString& operator=(const VString& other);
+    VString& operator=(VString&& other) noexcept;
 
-    // Conversion to const char *
-    operator const char *() const { return m_data; }
+    // Member functions
+    [[nodiscard]] const char16_t* c_str() const;
+    [[nodiscard]] size_t size() const;
+    [[nodiscard]] bool isEmpty() const;
+    [[nodiscard]] std::string toStdString() const;
 
-    // Concatenation operator
-    VString operator+(const VString &other) const;
+    void clear();
+    void append(const char16_t* str);
+    void append(const VString& other);
+    void insert(size_t pos, const char16_t* str);
+    void insert(size_t pos, const VString& other);
+    [[nodiscard]] VString substring(size_t pos, size_t len) const;
 
-    // Append function
-    void append(const char *str);
-
-    // Accessors
-    const char *data() const { return m_data; }
-
-    // Utility function to get length
-    int length() const { return m_length; }
+    // Overloaded Operators
+    friend std::ostream& operator<<(std::ostream& os, const VString& str);
+    VString operator+(const VString& other) const;
+    VString& operator+=(const VString& other);
+    bool operator==(const VString& other) const;
+    bool operator!=(const VString& other) const;
+    char16_t operator[](size_t index) const;
+    char16_t& operator[](size_t index);
 
 private:
-    char *m_data; // Pointer to the actual string data
-    int m_length; // Length of the string
+    char16_t* data;
+    size_t length;
+
+    void copyData(const char16_t* str, size_t len);
+    void copyData(const char* str);
+    void copyData(const std::string& str);
+    static size_t utf16Length(const char16_t* str);
 };
+
+// Additional helper functions
+VString toVString(const char* str);
+VString toVString(const std::string& str);
