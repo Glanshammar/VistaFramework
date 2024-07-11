@@ -10,24 +10,27 @@
 #include <memory>
 #include <fstream>
 #include <sstream>
+#include <VString>
+#include <VConsole>
 
-#define vObject constexpr std::unique_ptr<VObject>
 
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #endif
 
-using std::string;
-using std::vector;
-using std::cout;
 
 class VObject {
 private:
-    string objectName;
+    static int32_t objectCount;
+    VString objectName;
+    VObject* objectConnection;
 
 public:
-    void SetName(const string& name);
-    static bool Connect(const VObject& object);
-    static bool Disconnect(const VObject& object);
+    VObject();
+    ~VObject();
 
+    void SetName(const VString& name);
+    bool Connect(VObject* object);
+    bool Disconnect();
+    void PrintConnection() const;
 };
