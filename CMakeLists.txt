@@ -45,7 +45,7 @@ set(LIBRARIES
         Poco::Redis
 )
 
-add_library(VistaFramework STATIC
+set(VistaFiles
         "Vista/Graphics/vulkangui.cpp"
         "Vista/GUI/VConsole.cpp" "Vista/GUI/VConsole.hpp"
         "Vista/Core/VObject.cpp" "Vista/Core/VObject.hpp"
@@ -55,6 +55,8 @@ add_library(VistaFramework STATIC
         "Vista/Core/Filesystem/VFile.cpp" "Vista/Core/Filesystem/VFile.hpp"
         "Vista/Core/VString.cpp" "Vista/Core/VString.hpp"
 )
+
+add_library(VistaFramework STATIC ${VistaFiles})
 target_link_libraries(VistaFramework
         PUBLIC
         ${LIBRARIES}
@@ -74,6 +76,7 @@ add_executable(VistaTest
         "Vista/.tests/TestMain.cpp"
         "Vista/.tests/PlatformTest.cpp" "Vista/.tests/PlatformTest.hpp"
         "Vista/.tests/ConsoleTest.cpp" "Vista/.tests/ConsoleTest.hpp"
+        ${VistaFiles}
 
 )
 target_link_libraries(VistaTest
