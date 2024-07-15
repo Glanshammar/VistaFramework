@@ -18,6 +18,25 @@
 #include <windows.h>
 #endif
 
+template <typename... Args>
+class Signal {
+public:
+    using SlotType = std::function<void(Args...)>;
+
+    void connect(SlotType slot) {
+        slots_.push_back(slot);
+    }
+
+    void emit(Args... args) {
+        for (auto& slot : slots_) {
+            slot(args...);
+        }
+    }
+
+private:
+    std::vector<SlotType> slots_;
+};
+
 
 class VObject {
 private:
@@ -30,7 +49,4 @@ public:
     ~VObject();
 
     void SetName(const VString& name);
-    bool Connect(VObject* object);
-    bool Disconnect();
-    void PrintConnection() const;
 };
