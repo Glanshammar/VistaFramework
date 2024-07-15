@@ -53,7 +53,7 @@ set(VistaFiles
         "Vista/Serials/VSerialPort.cpp" "Vista/Serials/VSerialPort.hpp"
         "Vista/Core/VThread.cpp" "Vista/Core/VThread.hpp"
         "Vista/Core/Filesystem/VFile.cpp" "Vista/Core/Filesystem/VFile.hpp"
-        "Vista/Core/VString.cpp" "Vista/Core/VString.hpp"
+        "Vista/Core/DataTypes/VString.cpp" "Vista/Core/DataTypes/VString.hpp"
 )
 
 add_library(VistaFramework STATIC ${VistaFiles})
