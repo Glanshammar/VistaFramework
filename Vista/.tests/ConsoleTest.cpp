@@ -1,25 +1,33 @@
 #include <VString>
 #include <VConsole>
+#include <VThread>
+#include <VDefines>
 #include "ConsoleTest.hpp"
 
-#define vString std::u16string
+int testValue = 42;
 
-void Print(const std::u16string& str){
-    for (char16_t ch : str) {
-        std::wcout << (wchar_t)ch;
-    }
-    std::cout << std::endl;
+void ThreadFunction()
+{
+    testValue++;
 }
 
 void ConsoleTest(){
-    int testValue = 42;
-    VString test = "VString test. 😊🌍";
-    vString u16str = u"Hello World from u16string! 😊🌍";
-
+    VString testString = "Hello, World!";
 
     VDebug(Level::Info, "This is an informational message.");
     VDebug(Level::Warning, "Value might be out of range: " + std::to_string(testValue));
     VDebug(Level::Error, "Critical error occurred!");
-    std::cout << test << std::endl;
-    Print(u16str);
+    VPrint(testString);
+
+    VThreadGroup threadGroup;
+
+    for (Range(100))
+    {
+        threadGroup.addThread(VThread(ThreadFunction));
+    }
+
+    threadGroup.startAll();
+    threadGroup.joinAll();
+
+    VPrint(std::to_string(testValue));
 }
