@@ -15,7 +15,6 @@ VObject::VObject() : objectConnection(nullptr)
 }
 
 VObject::~VObject() {
-    Disconnect();
     objectCount--;
 }
 
@@ -23,6 +22,7 @@ void VObject::SetName(const VString& name) {
     objectName = name;
 }
 
+/*
 bool VObject::Connect(VObject* object) {
     if (object != nullptr) {
         objectConnection = object;
@@ -49,3 +49,4 @@ void VObject::PrintConnection() const {
         std::cout << objectName << " is not connected to any object" << std::endl;
     }
 }
+*/
