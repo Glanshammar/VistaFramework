@@ -156,11 +156,17 @@ VString VString::substring(size_t pos, size_t len) const {
     return result;
 }
 
-// Output Stream Operator
+// Output Stream Operator for std::ostream
 std::ostream& operator<<(std::ostream& os, const VString& str) {
     std::u16string u16str(str.data);
     std::string u8str(u16str.begin(), u16str.end());
     os << u8str;
+    return os;
+}
+
+// Output Stream Operator for std::wostream
+std::wostream& operator<<(std::wostream& os, const VString& str) {
+    os << reinterpret_cast<const wchar_t*>(str.c_str());
     return os;
 }
 

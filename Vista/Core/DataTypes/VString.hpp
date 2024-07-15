@@ -6,6 +6,7 @@
 #include <string>
 #include <codecvt>
 #include <locale>
+#include <memory>
 
 class VString {
 public:
@@ -39,6 +40,7 @@ public:
 
     // Overloaded Operators
     friend std::ostream& operator<<(std::ostream& os, const VString& str);
+    friend std::wostream& operator<<(std::wostream& os, const VString& str);
     VString operator+(const VString& other) const;
     VString& operator+=(const VString& other);
     bool operator==(const VString& other) const;
