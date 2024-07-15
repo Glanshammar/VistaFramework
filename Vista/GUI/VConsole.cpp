@@ -90,3 +90,7 @@ void VDebug(Level level, const std::string& message, bool newline) {
     std::cout << formattedMessage.str();
     setTextColor(Color::DEFAULT);
 }
+
+void VPrint(const VString& str) {
+    std::cout << str << std::endl;
+}

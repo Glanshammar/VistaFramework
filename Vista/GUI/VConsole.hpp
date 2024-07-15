@@ -4,6 +4,9 @@
 #include <sstream>
 #include <iostream>
 #include <VString>
+#include <codecvt>
+#include <locale>
+#include <iomanip>
 
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
@@ -29,3 +32,4 @@ enum class Level {
 
 void setTextColor(Color color);
 void VDebug(Level level, const std::string& message, bool newline = true);
+void VPrint(const VString& str);
