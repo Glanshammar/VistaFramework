@@ -1,0 +1,8 @@
+#pragma once
+
+#define VISTA_VERSION_MAJOR 1
+#define VISTA_VERSION_MINOR 0
+#define VISTA_VERSION_PATCH 0
+#define VISTA_VERSION_STRING "1.0.0"
+
+#define Range(x) int i = 0; i < x; i++
