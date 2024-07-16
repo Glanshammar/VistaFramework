@@ -1,5 +1,6 @@
 #include "ConsoleTest.hpp"
 #include "PlatformTest.hpp"
+#include "ObjectTest.hpp"
 #include <iostream>
 #include <string>
 #include <map>
@@ -13,6 +14,7 @@ using std::vector;
 std::map<string, std::function<void()>> testMap = {
     {"console", ConsoleTest},
     {"platform", PlatformTest},
+    {"object", ObjectTest},
     };
 
 int main()
