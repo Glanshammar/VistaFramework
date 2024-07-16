@@ -73,10 +73,11 @@ target_link_libraries(VistaLoader
 )
 
 add_executable(VistaTest
+        ${VistaFiles}
         "Vista/.tests/TestMain.cpp"
         "Vista/.tests/PlatformTest.cpp" "Vista/.tests/PlatformTest.hpp"
         "Vista/.tests/ConsoleTest.cpp" "Vista/.tests/ConsoleTest.hpp"
-        ${VistaFiles}
+        "Vista/.tests/ObjectTest.cpp" "Vista/.tests/ObjectTest.hpp"
 
 )
 target_link_libraries(VistaTest
