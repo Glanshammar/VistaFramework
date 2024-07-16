@@ -18,6 +18,7 @@
 #include <windows.h>
 #endif
 
+
 template <typename... Args>
 class Signal {
 public:
@@ -42,11 +43,10 @@ class VObject {
 private:
     static int32_t objectCount;
     VString objectName;
-    VObject* objectConnection;
 
 public:
     VObject();
     ~VObject();
 
-    void SetName(const VString& name);
+    void setName(const VString& name);
 };
