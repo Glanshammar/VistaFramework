@@ -12,6 +12,7 @@
 #include <sstream>
 #include <VString>
 #include <VConsole>
+#include <VDefines>
 
 
 #if defined(_WIN32) || defined(_WIN64)
