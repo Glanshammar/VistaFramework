@@ -32,4 +32,18 @@ enum class Level {
 
 void setTextColor(Color color);
 void VDebug(Level level, const std::string& message, bool newline = true);
-void VPrint(const VString& str);
+
+
+inline void VPrint() {
+    std::cout << std::endl;
+}
+
+// Recursive case: print the first argument and recursively call VPrint with the rest
+template<typename T, typename... Args>
+void VPrint(const T& first, const Args&... rest) {
+    std::cout << first;
+    if constexpr (sizeof...(rest) > 0) {
+        std::cout << " ";
+    }
+    VPrint(rest...);
+}
