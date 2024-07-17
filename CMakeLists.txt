@@ -54,6 +54,7 @@ set(VistaFiles
         "Vista/Core/VThread.cpp" "Vista/Core/VThread.hpp"
         "Vista/Core/Filesystem/VFile.cpp" "Vista/Core/Filesystem/VFile.hpp"
         "Vista/Core/DataTypes/VString.cpp" "Vista/Core/DataTypes/VString.hpp"
+        "Vista/Core/DataTypes/VArray.tpp" "Vista/Core/DataTypes/VArray.hpp"
 )
 
 add_library(VistaFramework STATIC ${VistaFiles})
@@ -78,6 +79,7 @@ add_executable(VistaTest
         "Vista/.tests/PlatformTest.cpp" "Vista/.tests/PlatformTest.hpp"
         "Vista/.tests/ConsoleTest.cpp" "Vista/.tests/ConsoleTest.hpp"
         "Vista/.tests/ObjectTest.cpp" "Vista/.tests/ObjectTest.hpp"
+        "Vista/.tests/ArrayTest.cpp" "Vista/.tests/ArrayTest.hpp"
 
 )
 target_link_libraries(VistaTest

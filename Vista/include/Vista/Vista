@@ -4,4 +4,5 @@
 #include "../../Core/Filesystem/VFile.hpp"
 #include "../../Core/VObject.hpp"
 #include "../../Core/VThread.hpp"
-#include "../../Core/VString.hpp"
+#include "../../Core/DataTypes/VString.hpp"
+#include "../../Core/DataTypes/VArray.hpp"
