@@ -55,6 +55,7 @@ set(VistaFiles
         "Vista/Core/Filesystem/VFile.cpp" "Vista/Core/Filesystem/VFile.hpp"
         "Vista/Core/DataTypes/VString.cpp" "Vista/Core/DataTypes/VString.hpp"
         "Vista/Core/DataTypes/VArray.tpp" "Vista/Core/DataTypes/VArray.hpp"
+        "Vista/Core/DataTypes/VAny.cpp" "Vista/Core/DataTypes/VAny.hpp"
 )
 
 add_library(VistaFramework STATIC ${VistaFiles})
