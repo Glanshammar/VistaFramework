@@ -1,8 +1,8 @@
+#include "ConsoleTest.hpp"
 #include <VString>
 #include <VConsole>
 #include <VThread>
 #include <VDefines>
-#include "ConsoleTest.hpp"
 
 int testValue = 42;
 
