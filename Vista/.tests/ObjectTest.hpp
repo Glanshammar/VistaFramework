@@ -4,14 +4,14 @@
 
 void ObjectTest();
 
-class Button {
+class VButton : public VObject {
 private:
     int32_t buttonID;
 public:
     Signal<int, int> clicked;
 
-    Button();
-    ~Button();
+    VButton();
+    ~VButton();
     void click(int x, int y);
 };
 
