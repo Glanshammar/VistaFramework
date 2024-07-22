@@ -12,7 +12,6 @@
 #include <sstream>
 #include <VString>
 #include <VConsole>
-#include <VDefines>
 
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -43,11 +42,19 @@ private:
 class VObject {
 private:
     static int32_t objectCount;
-    VString objectName;
+    std::string objectName;
+    VObject *parent = nullptr;
+    std::vector<VObject*> children;
 
 public:
     VObject();
     ~VObject();
 
-    void setName(const VString& name);
+    void setName(const std::string& name);
+    [[nodiscard]] std::string getName() const;
+    void setParent(VObject *parent);
+    [[nodiscard]] VObject *getParent() const;
+    void addChild(VObject *child);
+    [[nodiscard]] std::vector<VObject*> getChildren() const;
+    void printChildren() const;
 };
