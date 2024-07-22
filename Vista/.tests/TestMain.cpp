@@ -2,6 +2,7 @@
 #include "PlatformTest.hpp"
 #include "ObjectTest.hpp"
 #include "ArrayTest.hpp"
+#include <VApplication>
 #include <iostream>
 #include <string>
 #include <map>
@@ -12,6 +13,7 @@ using std::cout;
 using std::string;
 using std::vector;
 
+
 std::map<string, std::function<void()>> testMap = {
     {"console", ConsoleTest},
     {"platform", PlatformTest},
@@ -21,6 +23,9 @@ std::map<string, std::function<void()>> testMap = {
 
 int main()
 {
+    VApplication::setIcon("C:/Users/Mondus/Pictures/Programs/mandala.ico");
+    VApplication::setTitleBar("VistaCore Test Console");
+
     string input;
 
     while(true){
