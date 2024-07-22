@@ -1,2 +1,2 @@
 #pragma once
-#include "../../GUI/VConsole.hpp"
+#include "../../Core/Application/VConsole.hpp"
