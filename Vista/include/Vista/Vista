@@ -1,9 +1,0 @@
-#pragma once
-
-#include "../../GUI/VConsole.hpp"
-#include "../../Core/Filesystem/VFile.hpp"
-#include "../../Core/VObject.hpp"
-#include "../../Core/VThread.hpp"
-#include "../../Core/DataTypes/VString.hpp"
-#include "../../Core/DataTypes/VArray.hpp"
-#include "../../Core/DataTypes/VAny.hpp"
