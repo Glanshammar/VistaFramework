@@ -3,7 +3,6 @@
 #include <type_traits>
 #include <sstream>
 #include <iostream>
-#include <VString>
 #include <codecvt>
 #include <locale>
 #include <iomanip>
