@@ -1,5 +1,5 @@
 #include "ArrayTest.hpp"
-#include "../GUI/VConsole.hpp"
+#include "../Core/Application/VConsole.hpp"
 
 void ArrayTest()
 {

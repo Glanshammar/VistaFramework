@@ -1,10 +1,10 @@
 #include "ConsoleTest.hpp"
-#include <VString>
+#include <VistaCore>
 #include <VConsole>
 #include <VThread>
-#include <VDefines>
+#include <VGlobals>
 
-int testValue = 42;
+int32_t testValue = 42;
 
 void ThreadFunction()
 {
