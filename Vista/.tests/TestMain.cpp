@@ -23,7 +23,9 @@ std::map<string, std::function<void()>> testMap = {
 
 int main()
 {
+#if defined(_WIN32) || defined(_WIN64)
     VApplication::setIcon("C:/Users/Mondus/Pictures/Programs/mandala.ico");
+#endif
     VApplication::setTitleBar("VistaCore Test Console");
 
     string input;

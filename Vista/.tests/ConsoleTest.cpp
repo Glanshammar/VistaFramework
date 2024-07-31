@@ -4,11 +4,12 @@
 #include <VThread>
 #include <VGlobals>
 
-int32_t testValue = 42;
+int32_t lastValue;
+int32_t testValue = 50;
 
 void ThreadFunction()
 {
-    testValue++;
+    ++testValue;
 }
 
 void ConsoleTest(){
@@ -21,13 +22,16 @@ void ConsoleTest(){
 
     VThreadGroup threadGroup;
 
-    for (Range(100))
+    for (Range(50))
     {
+        lastValue = testValue;
         threadGroup.addThread(VThread(ThreadFunction));
     }
 
     threadGroup.startAll();
     threadGroup.joinAll();
 
+    VPrint(std::to_string(lastValue));
     VPrint(std::to_string(testValue));
+    VPrint("Difference: " + std::to_string(testValue - lastValue));
 }
