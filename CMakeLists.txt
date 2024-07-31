@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.28)
 project(VistaFramework)
 set(CMAKE_CXX_STANDARD 23)
 set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake")
 
 if(WIN32)
     set(USER_HOME $ENV{USERPROFILE})
@@ -16,7 +17,7 @@ link_directories("${VCPKG_DIR}/installed/x64-windows/lib")
 include_directories("Vista/include/Vista/")
 
 # All of the packages installed through vcpkg
-find_package(Vulkan REQUIRED)
+find_package(libxml2 REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(Libssh2 CONFIG REQUIRED)
 find_package(CURL CONFIG REQUIRED)
@@ -32,8 +33,10 @@ find_package(Poco REQUIRED COMPONENTS
         Redis
 )
 
+#Include external libraries installed on the system
+include(FindVulkan)
+
 set(LIBRARIES
-        Vulkan::Vulkan
         glfw
         CURL::libcurl
         OpenSSL::SSL
@@ -69,6 +72,7 @@ add_library(VistaFramework
 target_link_libraries(VistaFramework
         PUBLIC
         ${LIBRARIES}
+        ${LIBXML2_LIBRARIES}
         $<IF:$<TARGET_EXISTS:Libssh2::libssh2_shared>,Libssh2::libssh2_shared,Libssh2::libssh2_static>
 )
 
@@ -80,9 +84,17 @@ add_executable(VistaTest
         "Vista/.tests/ConsoleTest.cpp" "Vista/.tests/ConsoleTest.hpp"
         "Vista/.tests/ObjectTest.cpp" "Vista/.tests/ObjectTest.hpp"
         "Vista/.tests/ArrayTest.cpp" "Vista/.tests/ArrayTest.hpp"
-
 )
 target_link_libraries(VistaTest
         PUBLIC
         VistaFramework
 )
+
+if (Vulkan_FOUND)
+    message(STATUS "Found Vulkan: ${Vulkan_LIBRARY}")
+    include_directories(${Vulkan_INCLUDE_DIR})
+    target_link_libraries(VistaFramework PUBLIC ${Vulkan_LIBRARY})
+    target_link_libraries(VistaTest PUBLIC ${Vulkan_LIBRARY})
+else()
+    message(FATAL_ERROR "Vulkan not found.")
+endif()
