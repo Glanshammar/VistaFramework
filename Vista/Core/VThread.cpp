@@ -1,6 +1,5 @@
 #include "VThread.hpp"
 
-
 // ************************************************************************************************
 // VThread implementation
 // ************************************************************************************************
@@ -11,14 +10,14 @@ VThread::VThread(const std::function<void()>& functionName)
     if (!functionName) {
         throw std::invalid_argument("Function cannot be null");
     }
-    VThread::threadCount++;
+    ++VThread::threadCount;
 }
 
 VThread::~VThread() {
     if (thread.joinable()) {
         thread.join();
     }
-    VThread::threadCount--;
+    ++VThread::threadCount;
 }
 
 VThread::VThread(VThread&& other) noexcept

@@ -4,7 +4,7 @@
 #include <thread>
 #include <chrono>
 #include <atomic>
-#include <stdexcept>
+
 
 class VThread {
 private:
@@ -47,5 +47,5 @@ public:
     void joinAll();
 
     // Get the number of threads in the group
-    size_t size() const;
+    [[nodiscard]] size_t size() const;
 };
