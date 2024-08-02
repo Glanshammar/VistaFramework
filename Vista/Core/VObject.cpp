@@ -9,6 +9,12 @@ VObject::VObject() {
 
 VObject::~VObject() {
     objectCount--;
+    if (parent) {
+        disconnect(parent);
+    }
+    for (auto child : children) {
+        child->parent = nullptr;
+    }
 }
 
 void VObject::setName(const std::string& name) {
@@ -20,13 +26,41 @@ std::string VObject::getName() const {
 }
 
 void VObject::setParent(VObject *parent) {
-    this->parent = parent;
-    parent->addChild(this);
+    if (!parent) {
+        return;
+    }
+
+    if (this->parent != parent) {
+        this->parent = parent;
+        parent->addChild(this);
+    }
 }
 
 VObject *VObject::getParent() const {
     return parent;
 }
+
+void VObject::disconnect(VObject *object) {
+    if (!object) {
+        return;
+    }
+
+    const auto& siblings = object->getChildren();
+    if (std::ranges::find(siblings, this) != siblings.end()) {
+        std::erase(object->children, this);
+        std::cout << "Child object disconnected." << object << std::endl;
+    } else {
+        std::cout << "Child object is not connected " << std::endl;
+    }
+
+    if (this->parent == object) {
+        this->parent = nullptr;
+        std::cout << "Parent object disconnected." << object << std::endl;
+    } else {
+        std::cout << "Parent object is not connected " << std::endl;
+    }
+}
+
 
 void VObject::addChild(VObject *child) {
     children.push_back(child);

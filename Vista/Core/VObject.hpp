@@ -6,6 +6,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <ranges>
 #include <functional>
 #include <memory>
 #include <fstream>
@@ -53,6 +54,7 @@ public:
     void setName(const std::string& name);
     [[nodiscard]] std::string getName() const;
     void setParent(VObject *parent);
+    void disconnect(VObject *object);
     [[nodiscard]] VObject *getParent() const;
     void addChild(VObject *child);
     [[nodiscard]] std::vector<VObject*> getChildren() const;
