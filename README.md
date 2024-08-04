@@ -1,7 +1,7 @@
 # Vista Framework
 
 ## Overview
-Vista is an advanced framework designed to empower developers in creating high-performance applications with ease. It offers a comprehensive suite of tools and libraries tailored to modern software development needs.
+Vista is an advanced framework designed to empower developers in creating high-performance and elegant applications with ease. It offers a comprehensive suite of tools and libraries tailored to modern software development needs.
 
 ## Features
 ### Core Functionality
