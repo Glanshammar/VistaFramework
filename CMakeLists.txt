@@ -10,7 +10,7 @@ elseif(UNIX)
     set(USER_HOME $ENV{HOME})
 endif()
 
-set(VCPKG_DIR "${USER_HOME}/.vcpkg-clion/VistaFW")
+set(VCPKG_DIR "${USER_HOME}/.vcpkg-clion/Vista")
 set(CMAKE_TOOLCHAIN_FILE "${VCPKG_DIR}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
 link_directories("${VCPKG_DIR}/installed/x64-windows/lib")
 
@@ -33,8 +33,18 @@ find_package(Poco REQUIRED COMPONENTS
         Redis
 )
 
-#Include external libraries installed on the system
-include(FindVulkan)
+# Include external libraries installed on the system by automatically searching for them.
+# Automatic search is on by default, but you can manually include them if you prefer.
+set(AUTOMATIC_SEARCH_VULKAN OFF)
+
+if(AUTOMATIC_SEARCH_VULKAN)
+    include(FindVulkan)
+else()
+    set(Vulkan_ROOT "/opt/vulkan-1.3.290") # Change path to your installed Vulkan folder.
+    set(Vulkan_INCLUDE_DIR "${Vulkan_ROOT}/x86_64/include/")
+    set(Vulkan_LIBRARY "${Vulkan_ROOT}/x86_64/lib/libvulkan.so")
+    set(Vulkan_FOUND ON)
+endif()
 
 set(LIBRARIES
         glfw
@@ -92,6 +102,7 @@ target_link_libraries(VistaTest
 
 if (Vulkan_FOUND)
     message(STATUS "Found Vulkan: ${Vulkan_LIBRARY}")
+    message(STATUS "Found Vulkan include: ${Vulkan_INCLUDE_DIR}")
     include_directories(${Vulkan_INCLUDE_DIR})
     target_link_libraries(VistaFramework PUBLIC ${Vulkan_LIBRARY})
     target_link_libraries(VistaTest PUBLIC ${Vulkan_LIBRARY})

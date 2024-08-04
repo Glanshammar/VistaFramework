@@ -18,6 +18,10 @@ else()
     find_library(Vulkan_LIBRARY NAMES vulkan
             HINTS "$ENV{VULKAN_SDK}/lib" "/usr/lib" "/usr/local/lib"
             PATH_SUFFIXES x86_64-linux-gnu)
+
+    # Print out found paths for debugging
+    message(STATUS "Vulkan_INCLUDE_DIR: ${Vulkan_INCLUDE_DIR}")
+    message(STATUS "Vulkan_LIBRARY: ${Vulkan_LIBRARY}")
 endif()
 
 # Handle the results
