@@ -35,15 +35,18 @@ find_package(Poco REQUIRED COMPONENTS
 
 # Include external libraries installed on the system by automatically searching for them.
 # Automatic search is on by default, but you can manually include them if you prefer.
-set(AUTOMATIC_SEARCH_VULKAN OFF)
+set(AUTOMATIC_SEARCH_VULKAN ON)
 
 if(AUTOMATIC_SEARCH_VULKAN)
     include(FindVulkan)
 else()
-    set(Vulkan_ROOT "/opt/vulkan-1.3.290") # Change path to your installed Vulkan folder.
+    set(Vulkan_ROOT "/opt/Vulkan-1.3.290.0") # Set the root path of Vulkan installation
     set(Vulkan_INCLUDE_DIR "${Vulkan_ROOT}/x86_64/include/")
     set(Vulkan_LIBRARY "${Vulkan_ROOT}/x86_64/lib/libvulkan.so")
-    set(Vulkan_FOUND ON)
+
+    if(EXISTS "${Vulkan_ROOT}" AND IS_DIRECTORY "${Vulkan_ROOT}")
+        set(Vulkan_FOUND ON)
+    endif()
 endif()
 
 set(LIBRARIES
