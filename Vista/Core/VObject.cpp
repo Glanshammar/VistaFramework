@@ -1,4 +1,5 @@
 #include "VObject.hpp"
+#include <VGlobals>
 
 int32_t VObject::objectCount = 0;
 
@@ -8,6 +9,7 @@ VObject::VObject() {
 }
 
 VObject::~VObject() {
+    emitDestroyed();
     objectCount--;
     if (parent) {
         disconnect(parent);
@@ -18,15 +20,33 @@ VObject::~VObject() {
 }
 
 void VObject::setName(const std::string& name) {
-    objectName = name;
+    try
+    {
+        objectName = name;
+    } catch (const std::exception& e)
+    {
+        std::cerr << "Exception caught: " << e.what() << std::endl;
+    }
 }
 
 std::string VObject::getName() const {
-    return objectName;
+    try
+    {
+        return objectName;
+    } catch (const std::exception& e)
+    {
+        std::cerr << "Exception caught: " << e.what() << std::endl;
+        return "Error";
+    }
 }
 
 void VObject::setParent(VObject *parent) {
     if (!parent) {
+        return;
+    }
+
+    if (this == parent) {
+        std::cout << "An object cannot be its own parent." << std::endl;
         return;
     }
 
@@ -48,14 +68,15 @@ void VObject::disconnect(VObject *object) {
     const auto& siblings = object->getChildren();
     if (std::ranges::find(siblings, this) != siblings.end()) {
         std::erase(object->children, this);
-        std::cout << "Child object disconnected." << object << std::endl;
+        std::cout << "Children disconnected from: " << object->getName() << std::endl;
+        object->printChildren();
     } else {
         std::cout << "Child object is not connected " << std::endl;
     }
 
     if (this->parent == object) {
+        std::cout << "Parent object disconnected: " << this->parent->getName() << " from " << this->getName() << std::endl;
         this->parent = nullptr;
-        std::cout << "Parent object disconnected." << object << std::endl;
     } else {
         std::cout << "Parent object is not connected " << std::endl;
     }
@@ -71,7 +92,13 @@ std::vector<VObject*> VObject::getChildren() const {
 }
 
 void VObject::printChildren() const {
-    for(auto& child : children) {
-        std::cout << child->getName() << std::endl;
+    if(this->getChildren().empty())
+    {
+        std::cout << this->getName() << " has no child objects." << std::endl;
+    } else
+    {
+        for(auto& child : children) {
+            std::cout << "Child of " << this->getName() << ": " << child->getName() << std::endl;
+        }
     }
 }

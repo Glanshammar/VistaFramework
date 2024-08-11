@@ -47,6 +47,8 @@ private:
     VObject *parent = nullptr;
     std::vector<VObject*> children;
 
+    Signal<VObject*> destroyed;
+
 public:
     VObject();
     ~VObject();
@@ -59,4 +61,13 @@ public:
     void addChild(VObject *child);
     [[nodiscard]] std::vector<VObject*> getChildren() const;
     void printChildren() const;
+
+    void onDestroyed(const Signal<VObject*>::SlotType& slot) {
+        destroyed.connect(slot);
+    }
+
+protected:
+    void emitDestroyed() {
+        destroyed.emit(this);
+    }
 };
