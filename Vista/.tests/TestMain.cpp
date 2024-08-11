@@ -8,6 +8,8 @@
 #include <map>
 #include <functional>
 #include <vector>
+#include <unistd.h>
+#include <csignal>
 
 using std::cout;
 using std::string;
@@ -25,8 +27,8 @@ int main()
 {
 #if defined(_WIN32) || defined(_WIN64)
     VApplication::setIcon("C:/Users/Mondus/Pictures/Programs/mandala.ico");
-#endif
     VApplication::setTitleBar("VistaCore Test Console");
+#endif
 
     string input;
 
@@ -35,12 +37,18 @@ int main()
 
         std::getline(std::cin, input);
 
-        if (input.empty()) {
-            continue;
-        } else if(input == "exit" || input == "quit" || input == "q" || input == "e") {
+        if(input == "exit" || input == "quit" || input == "q" || input == "e") {
+            pid_t parent_pid = getppid();
+            kill(parent_pid, SIGQUIT);
             break;
-        } else if (input == "clear" || input == "cls") {
+        }
+
+        if (input == "clear" || input == "cls") {
             system("cls");
+            continue;
+        }
+
+        if (input.empty()) {
             continue;
         }
 

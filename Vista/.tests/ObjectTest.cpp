@@ -26,6 +26,7 @@ void anotherButtonClickedHandler(int x, int y) {
     std::cout << "Button was clicked at (" << x << ", " << y << ") (slot 2)!\n";
 }
 
+
 void ObjectTest(){
     VApplication app;
     app.setName("Console Application");
@@ -39,6 +40,18 @@ void ObjectTest(){
     VButton button3;
     button3.setParent(&app);
 
+    button.onDestroyed([](VObject* object) {
+        std::cout << "Object destroyed: " << object->getName() << std::endl;
+    });
+
+    button2.onDestroyed([](VObject* object) {
+        std::cout << "Object destroyed: " << object->getName() << std::endl;
+    });
+
+    button3.onDestroyed([](VObject* object) {
+        std::cout << "Object destroyed: " << object->getName() << std::endl;
+    });
+
     std::cout << "App name: " << app.getName() << std::endl;
     app.printChildren();
 
@@ -46,12 +59,12 @@ void ObjectTest(){
     button.clicked.connect(anotherButtonClickedHandler);
     button.click(10, 20);
 
-    std:: cout << button.getParent() << std::endl;
-    button.disconnect(button.getParent());
-    std:: cout << button.getParent() << std::endl;
-    app.printChildren();
-
-
     button.setParent(&button);
-    std:: cout << "Button 1 parent: " << button.getParent()->getName() << std::endl;
+    if(button.getParent() != nullptr)
+    {
+        std:: cout << "Button 1 parent: " << button.getParent()->getName() << std::endl;
+    } else
+    {
+        std::cout << "Button 1 parent is null." << std::endl;
+    }
 }
