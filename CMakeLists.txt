@@ -15,6 +15,7 @@ set(CMAKE_TOOLCHAIN_FILE "${VCPKG_DIR}/scripts/buildsystems/vcpkg.cmake" CACHE S
 link_directories("${VCPKG_DIR}/installed/x64-windows/lib")
 
 include_directories("Vista/include/Vista/")
+include_directories("Vista/include/stb/") #Download STB from github.com/nothings/stb, and extract to include folder.
 
 # All of the packages installed through vcpkg
 find_package(libxml2 REQUIRED)
@@ -103,8 +104,17 @@ target_link_libraries(VistaTest
         VistaFramework
 )
 
+add_executable(VistaGUI
+        ${VistaFiles}
+        Vista/.tests/GUI/VistaGUI.cpp
+        Vista/.tests/GUI/VistaGUI.hpp)
+target_link_libraries(VistaGUI
+        PUBLIC
+        VistaFramework
+)
+
 if (Vulkan_FOUND)
-    message(STATUS "Found Vulkan: ${Vulkan_LIBRARY}")
+    message(STATUS "Found Vulkan library: ${Vulkan_LIBRARY}")
     message(STATUS "Found Vulkan include: ${Vulkan_INCLUDE_DIR}")
     include_directories(${Vulkan_INCLUDE_DIR})
     target_link_libraries(VistaFramework PUBLIC ${Vulkan_LIBRARY})
