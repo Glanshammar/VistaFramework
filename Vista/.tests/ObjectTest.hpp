@@ -6,7 +6,6 @@ void ObjectTest();
 
 class VButton : public VObject {
 private:
-    int32_t buttonID;
 public:
     Signal<int, int> clicked;
 

@@ -4,9 +4,9 @@
 
 static int32_t buttonCount = 0;
 
+
 VButton::VButton() {
-    buttonID = ++buttonCount;
-    setName("Button" + std::to_string(buttonID));
+    setName("Button" + std::to_string(++buttonCount));
 }
 
 VButton::~VButton() {
@@ -26,45 +26,38 @@ void anotherButtonClickedHandler(int x, int y) {
     std::cout << "Button was clicked at (" << x << ", " << y << ") (slot 2)!\n";
 }
 
+void onButtonDestroyFunc(const VObject* button)
+{
+    std::cout << "Button destroyed: " << button->getName() << std::endl;
+}
 
 void ObjectTest(){
     VApplication app;
     app.setName("Console Application");
 
     VButton button;
+    button.setName("Button 1");
     button.setParent(&app);
 
     VButton button2;
+    button2.setName("Button 2");
     button2.setParent(&app);
 
     VButton button3;
+    button3.setName("Button 3");
     button3.setParent(&app);
 
-    button.onDestroyed([](VObject* object) {
-        std::cout << "Object destroyed: " << object->getName() << std::endl;
-    });
+    button.onDestroyed(onButtonDestroyFunc);
+    button2.onDestroyed(onButtonDestroyFunc);
+    button3.onDestroyed(onButtonDestroyFunc);
 
-    button2.onDestroyed([](VObject* object) {
-        std::cout << "Object destroyed: " << object->getName() << std::endl;
-    });
-
-    button3.onDestroyed([](VObject* object) {
-        std::cout << "Object destroyed: " << object->getName() << std::endl;
-    });
-
-    std::cout << "App name: " << app.getName() << std::endl;
-    app.printChildren();
 
     button.clicked.connect(onButtonClicked);
     button.clicked.connect(anotherButtonClickedHandler);
     button.click(10, 20);
 
     button.setParent(&button);
-    if(button.getParent() != nullptr)
-    {
-        std:: cout << "Button 1 parent: " << button.getParent()->getName() << std::endl;
-    } else
-    {
-        std::cout << "Button 1 parent is null." << std::endl;
-    }
+    std:: cout << "Button 1 memory: " << &button << std::endl;
+    std:: cout << "Button 1 parent: " << button.getParent()->getName() << std::endl;
+    std:: cout << "App memory: " << &app << std::endl;
 }
