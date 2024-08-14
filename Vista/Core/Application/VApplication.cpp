@@ -47,29 +47,9 @@ void VApplication::setTitleBar(const std::string& title) {
     std::cout << "\033]0;" << title << "\007"; // ANSI escape sequence to set terminal title
 }
 
-void VApplication::setIcon(const std::string& iconPath) {
-    // Icons are not supported in Linux terminal
-    std::cerr << "Setting icons dynamically in Linux terminal is not supported.\n"
-              << "You can set an icon in a .desktop file for your application.\n"
-              << "Example:\n"
-              << "[Desktop Entry]\n"
-              << "Name=YourAppName\n"
-              << "Exec=path/to/your/executable\n"
-              << "Icon=" << iconPath << "\n"
-              << "Type=Application\n"
-              << "Terminal=true\n";
-}
-
 #elif defined(__APPLE__)
 void VApplication::setTitleBar(const std::string& title) {
     // Set console title (if applicable)
     std::cout << "\033]0;" << title << "\007"; // ANSI escape sequence to set terminal title
-}
-
-void VApplication::setIcon(const std::string& iconPath) {
-    // Icons are not supported in macOS terminal
-    std::cerr << "Setting icons dynamically in macOS terminal is not supported.\n"
-              << "You can set an icon for an application bundle.\n"
-              << "To set an icon for a macOS application bundle, place the .icns file in the Resources directory of the .app bundle and update the Info.plist file accordingly.\n";
 }
 #endif
