@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.28)
 project(VistaFramework)
 set(CMAKE_CXX_STANDARD 23)
-set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+set(PROJECT_ROOT ..)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake")
 
 if(WIN32)
@@ -14,12 +14,13 @@ set(VCPKG_DIR "${USER_HOME}/.vcpkg-clion/Vista")
 set(CMAKE_TOOLCHAIN_FILE "${VCPKG_DIR}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
 link_directories("${VCPKG_DIR}/installed/x64-windows/lib")
 
-include_directories("Vista/include/Vista/")
-include_directories("Vista/include/stb/") #Download STB from github.com/nothings/stb, and extract to include folder.
+include_directories("include/Vista")
+include_directories("include/stb/") #Download STB from github.com/nothings/stb, and extract to include folder.
 
 # All of the packages installed through vcpkg
+# Use MSVC for Windows and GCC for Linux and macOS
 find_package(libxml2 REQUIRED)
-find_package(glfw3 REQUIRED)
+find_package(glfw3 CONFIG REQUIRED)
 find_package(Libssh2 CONFIG REQUIRED)
 find_package(CURL CONFIG REQUIRED)
 find_package(OpenSSL REQUIRED)
@@ -66,17 +67,17 @@ set(LIBRARIES
 )
 
 set(VistaFiles
-        "Vista/Graphics/vulkangui.cpp" "Vista/Graphics/vulkangui.hpp"
-        "Vista/Core/Application/VConsole.cpp" "Vista/Core/Application/VConsole.hpp"
-        "Vista/Core/VObject.cpp" "Vista/Core/VObject.hpp"
-        "Vista/Serials/VSerialBus.cpp" "Vista/Serials/VSerialBus.hpp"
-        "Vista/Serials/VSerialPort.cpp" "Vista/Serials/VSerialPort.hpp"
-        "Vista/Core/VThread.cpp" "Vista/Core/VThread.hpp"
-        "Vista/Core/Filesystem/VFile.cpp" "Vista/Core/Filesystem/VFile.hpp"
-        "Vista/Core/DataTypes/VString.cpp" "Vista/Core/DataTypes/VString.hpp"
-        "Vista/Core/DataTypes/VArray.tpp" "Vista/Core/DataTypes/VArray.hpp"
-        "Vista/Core/Application/VApplication.cpp" "Vista/Core/Application/VApplication.hpp"
-        "Vista/Core/DataTypes/VInt.tpp" "Vista/Core/DataTypes/VInt.hpp"
+        "Graphics/vulkangui.cpp" "Graphics/vulkangui.hpp"
+        "Core/Application/VConsole.cpp" "Core/Application/VConsole.hpp"
+        "Core/VObject.cpp" "Core/VObject.hpp"
+        "Serials/VSerialBus.cpp" "Serials/VSerialBus.hpp"
+        "Serials/VSerialPort.cpp" "Serials/VSerialPort.hpp"
+        "Core/VThread.cpp" "Core/VThread.hpp"
+        "Core/Filesystem/VFile.cpp" "Core/Filesystem/VFile.hpp"
+        "Core/DataTypes/VString.cpp" "Core/DataTypes/VString.hpp"
+        "Core/DataTypes/VArray.tpp" "Core/DataTypes/VArray.hpp"
+        "Core/Application/VApplication.cpp" "Core/Application/VApplication.hpp"
+        "Core/DataTypes/VInt.tpp" "Core/DataTypes/VInt.hpp"
 )
 
 add_library(VistaFramework
@@ -93,11 +94,11 @@ target_link_libraries(VistaFramework
 
 add_executable(VistaTest
         ${VistaFiles}
-        "Vista/.tests/TestMain.cpp"
-        "Vista/.tests/PlatformTest.cpp" "Vista/.tests/PlatformTest.hpp"
-        "Vista/.tests/ConsoleTest.cpp" "Vista/.tests/ConsoleTest.hpp"
-        "Vista/.tests/ObjectTest.cpp" "Vista/.tests/ObjectTest.hpp"
-        "Vista/.tests/ArrayTest.cpp" "Vista/.tests/ArrayTest.hpp"
+        ".tests/TestMain.cpp"
+        ".tests/PlatformTest.cpp" ".tests/PlatformTest.hpp"
+        ".tests/ConsoleTest.cpp" ".tests/ConsoleTest.hpp"
+        ".tests/ObjectTest.cpp" ".tests/ObjectTest.hpp"
+        ".tests/ArrayTest.cpp" ".tests/ArrayTest.hpp"
 )
 target_link_libraries(VistaTest
         PUBLIC
@@ -106,8 +107,8 @@ target_link_libraries(VistaTest
 
 add_executable(VistaGUI
         ${VistaFiles}
-        Vista/.tests/GUI/VistaGUI.cpp
-        Vista/.tests/GUI/VistaGUI.hpp)
+        .tests/GUI/VistaGUI.cpp
+        .tests/GUI/VistaGUI.hpp)
 target_link_libraries(VistaGUI
         PUBLIC
         VistaFramework

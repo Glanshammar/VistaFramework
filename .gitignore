@@ -36,4 +36,4 @@
 /.idea/
 /cmake-build-debug/
 /cmake-build-release/
-/Vista/include/stb/
+/VistaCPP/include/stb/
