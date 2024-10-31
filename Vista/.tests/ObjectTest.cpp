@@ -13,16 +13,16 @@ VButton::~VButton() {
     buttonCount--;
 }
 
-void VButton::click(int x, int y) {
+void VButton::click(const int x, const int y) {
     std::cout << "Button clicked at (" << x << ", " << y << ")!\n";
     clicked.emit(x, y);
 }
 
-void onButtonClicked(int x, int y) {
+void onButtonClicked(const int x, const int y) {
     std::cout << "Button was clicked at (" << x << ", " << y << ") (slot 1)!\n";
 }
 
-void anotherButtonClickedHandler(int x, int y) {
+void anotherButtonClickedHandler(const int x, const int y) {
     std::cout << "Button was clicked at (" << x << ", " << y << ") (slot 2)!\n";
 }
 
@@ -59,5 +59,6 @@ void ObjectTest(){
     button.setParent(&button);
     std:: cout << "Button 1 memory: " << &button << std::endl;
     std:: cout << "Button 1 parent: " << button.getParent()->getName() << std::endl;
+    std:: cout << "Button 1 parent: " << button.getParent() << std::endl;
     std:: cout << "App memory: " << &app << std::endl;
 }
