@@ -42,7 +42,7 @@ set(AUTOMATIC_SEARCH_VULKAN ON)
 if(AUTOMATIC_SEARCH_VULKAN)
     include(FindVulkan)
 else()
-    set(Vulkan_ROOT "/opt/Vulkan-1.3.290.0") # Set the root path of Vulkan installation
+    set(Vulkan_ROOT "") # Set the root path of Vulkan installation
     set(Vulkan_INCLUDE_DIR "${Vulkan_ROOT}/x86_64/include/")
     set(Vulkan_LIBRARY "${Vulkan_ROOT}/x86_64/lib/libvulkan.so")
 
@@ -88,7 +88,7 @@ target_link_libraries(VistaFramework
         PUBLIC
         ${LIBRARIES}
         ${LIBXML2_LIBRARIES}
-        $<IF:$<TARGET_EXISTS:Libssh2::libssh2_shared>,Libssh2::libssh2_shared,Libssh2::libssh2_static>
+        $<IF:$<TARGET_EXISTS:Libssh2::Libssh2>,Libssh2::Libssh2,Libssh2>
 )
 
 
