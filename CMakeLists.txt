@@ -21,7 +21,7 @@ include_directories("Vista/include/stb/") #Download STB from github.com/nothings
 # Use MSVC for Windows and GCC for Linux and macOS
 find_package(libxml2 REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
-find_package(Libssh2 CONFIG REQUIRED)
+find_package(libssh2 CONFIG REQUIRED)
 find_package(CURL CONFIG REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(Poco REQUIRED COMPONENTS
@@ -42,7 +42,7 @@ set(AUTOMATIC_SEARCH_VULKAN ON)
 if(AUTOMATIC_SEARCH_VULKAN)
     include(FindVulkan)
 else()
-    set(Vulkan_ROOT "") # Set the root path of Vulkan installation
+    set(Vulkan_ROOT "C:/VulkanSDK/1.3.296.0") # Set the root path of Vulkan installation
     set(Vulkan_INCLUDE_DIR "${Vulkan_ROOT}/x86_64/include/")
     set(Vulkan_LIBRARY "${Vulkan_ROOT}/x86_64/lib/libvulkan.so")
 
@@ -53,6 +53,8 @@ endif()
 
 set(LIBRARIES
         glfw
+        LibXml2::LibXml2
+        Libssh2::libssh2
         CURL::libcurl
         OpenSSL::SSL
         OpenSSL::Crypto
@@ -87,8 +89,6 @@ add_library(VistaFramework
 target_link_libraries(VistaFramework
         PUBLIC
         ${LIBRARIES}
-        ${LIBXML2_LIBRARIES}
-        $<IF:$<TARGET_EXISTS:Libssh2::Libssh2>,Libssh2::Libssh2,Libssh2>
 )
 
 
