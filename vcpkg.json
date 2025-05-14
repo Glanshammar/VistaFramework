@@ -1,0 +1,13 @@
+{
+  "name": "vista-framework",
+  "version": "0.1.0",
+  "description": "Vista Framework - A C++ application framework",
+  "homepage": "https://github.com/Glanshammar/VistaFramework",
+  "dependencies": [
+    "libxml2",
+    "libssh2",
+    "curl",
+    "openssl",
+    "poco"
+  ]
+} 
