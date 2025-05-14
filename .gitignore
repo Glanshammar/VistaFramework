@@ -39,3 +39,7 @@
 /Vista/include/stb-master/
 /Vista/cmake-build-debug/
 /Vista/cmake-build-release/
+
+# Other
+build/
+vcpkg_installed/
