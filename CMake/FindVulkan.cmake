@@ -1,27 +1,74 @@
+# FindVulkan.cmake - Find Vulkan SDK
+# Defines the following variables:
+#  Vulkan_FOUND        - True if Vulkan was found
+#  Vulkan_INCLUDE_DIR  - Include directories for Vulkan
+#  Vulkan_LIBRARY      - Vulkan library to link against
+
+# Check for VULKAN_SDK environment variable first
+if(NOT "$ENV{VULKAN_SDK}" STREQUAL "")
+    set(VULKAN_SDK_PATH "$ENV{VULKAN_SDK}")
+    message(STATUS "Using Vulkan SDK path from environment: ${VULKAN_SDK_PATH}")
+endif()
+
 if (WIN32)
+    # Windows-specific paths
     find_path(Vulkan_INCLUDE_DIR NAMES vulkan/vulkan.h
-            HINTS "$ENV{VULKAN_SDK}/Include" "$ENV{VK_SDK_PATH}/Include"
+            HINTS 
+                "${VULKAN_SDK_PATH}/Include"
+                "$ENV{VK_SDK_PATH}/Include"
             PATH_SUFFIXES include)
 
     if (CMAKE_CL_64)
         find_library(Vulkan_LIBRARY NAMES vulkan-1
-                HINTS "$ENV{VULKAN_SDK}/Lib" "$ENV{VK_SDK_PATH}/Lib")
+                HINTS 
+                    "${VULKAN_SDK_PATH}/Lib" 
+                    "$ENV{VK_SDK_PATH}/Lib")
     else()
         find_library(Vulkan_LIBRARY NAMES vulkan-1
-                HINTS "$ENV{VULKAN_SDK}/Lib32" "$ENV{VK_SDK_PATH}/Lib32")
+                HINTS 
+                    "${VULKAN_SDK_PATH}/Lib32" 
+                    "$ENV{VK_SDK_PATH}/Lib32")
     endif()
 else()
+    # Linux-specific paths (more comprehensive search)
     find_path(Vulkan_INCLUDE_DIR NAMES vulkan/vulkan.h
-            HINTS "$ENV{VULKAN_SDK}/include" "/usr/include" "/usr/local/include"
+            HINTS 
+                "${VULKAN_SDK_PATH}/include"
+                "/usr/include"
+                "/usr/local/include"
+                "/opt/vulkan/include"
             PATH_SUFFIXES vulkan)
 
-    find_library(Vulkan_LIBRARY NAMES vulkan
-            HINTS "$ENV{VULKAN_SDK}/lib" "/usr/lib" "/usr/local/lib"
-            PATH_SUFFIXES x86_64-linux-gnu)
+    # On openSUSE, the library is usually in /usr/lib64
+    find_library(Vulkan_LIBRARY 
+            NAMES 
+                vulkan
+                libvulkan.so.1
+                libvulkan.so
+            HINTS 
+                "${VULKAN_SDK_PATH}/lib"
+                "/usr/lib"
+                "/usr/lib64"
+                "/usr/local/lib"
+                "/usr/local/lib64"
+                "/opt/vulkan/lib"
+            PATH_SUFFIXES 
+                x86_64-linux-gnu
+                i386-linux-gnu
+                arm-linux-gnueabihf
+                aarch64-linux-gnu)
 
-    # Print out found paths for debugging
-    message(STATUS "Vulkan_INCLUDE_DIR: ${Vulkan_INCLUDE_DIR}")
-    message(STATUS "Vulkan_LIBRARY: ${Vulkan_LIBRARY}")
+    # Print debug info
+    message(STATUS "Vulkan search paths:")
+    message(STATUS "  - VULKAN_SDK: $ENV{VULKAN_SDK}")
+    message(STATUS "  - include: ${Vulkan_INCLUDE_DIR}")
+    message(STATUS "  - library: ${Vulkan_LIBRARY}")
+    
+    # On openSUSE, try to manually install Vulkan if not found
+    if(NOT Vulkan_INCLUDE_DIR OR NOT Vulkan_LIBRARY)
+        message(STATUS "Vulkan not found in standard locations. On openSUSE, you can install it with:")
+        message(STATUS "  sudo zypper install vulkan-devel vulkan-loader")
+    endif()
 endif()
 
 # Handle the results
