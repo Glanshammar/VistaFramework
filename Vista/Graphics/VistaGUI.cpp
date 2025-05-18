@@ -1,9 +1,108 @@
 #include "VistaGUI.hpp"
 #include <iostream>
+#include <cstdlib>
+
+#if defined(__linux__)
+#include <unistd.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <unistd.h>
+#endif
 
+// ----------------------------------------
+// VistaGUI Implementation
+// ----------------------------------------
+
+VistaGUI::VistaGUI() : platform(Platform::Unknown) {
+    setName("VistaGUI");
+    platform = detectPlatform();
+}
+
+VistaGUI::~VistaGUI() = default;
+
+bool VistaGUI::init(int width, int height, const char* title) {
+    platform = detectPlatform();
+    
+    // Create the appropriate window based on the detected platform
+    switch (platform) {
+        case Platform::Windows:
+#if defined(_WIN32) || defined(_WIN64)
+            window = std::make_unique<WindowsWindow>();
+#endif
+            break;
+            
+        case Platform::LinuxX11:
+#if defined(__linux__)
+            window = std::make_unique<X11Window>();
+#endif
+            break;
+            
+        case Platform::LinuxWayland:
+#if defined(__linux__)
+            window = std::make_unique<WaylandWindow>();
+#endif
+            break;
+            
+        case Platform::MacOS:
+#if defined(__APPLE__)
+            window = std::make_unique<MacOSWindow>();
+#endif
+            break;
+            
+        default:
+            std::cerr << "Unsupported platform detected." << std::endl;
+            return false;
+    }
+    
+    if (!window) {
+        std::cerr << "Failed to create window for the current platform." << std::endl;
+        return false;
+    }
+    
+    return window->init(width, height, title);
+}
+
+void VistaGUI::run() {
+    if (window) {
+        window->run();
+    }
+}
+
+VistaGUI::Platform VistaGUI::detectPlatform() {
+#if defined(_WIN32) || defined(_WIN64)
+    return Platform::Windows;
+#elif defined(__linux__)
+    if (isWaylandSession()) {
+        return Platform::LinuxWayland;
+    } else {
+        return Platform::LinuxX11;
+    }
+#elif defined(__APPLE__)
+    return Platform::MacOS;
+#else
+    return Platform::Unknown;
+#endif
+}
+
+bool VistaGUI::isWaylandSession() {
+#if defined(__linux__)
+    // Check for Wayland by examining the XDG_SESSION_TYPE environment variable
+    const char* sessionType = std::getenv("XDG_SESSION_TYPE");
+    if (sessionType && std::string(sessionType) == "wayland") {
+        return true;
+    }
+    
+    // Also check WAYLAND_DISPLAY as a fallback
+    const char* waylandDisplay = std::getenv("WAYLAND_DISPLAY");
+    return waylandDisplay != nullptr;
+#else
+    return false;
+#endif
+}
+
+// ----------------------------------------
+// X11Window Implementation
+// ----------------------------------------
+#if defined(__linux__)
 X11Window::X11Window() : display(nullptr), window(0), screen(0) {}
 
 X11Window::~X11Window() {
@@ -93,3 +192,176 @@ void X11Window::handleMouseClick(int x, int y) {
     XFillRectangle(display, window, gc, x-5, y-5, 10, 10);
     XFreeGC(display, gc);
 }
+
+// ----------------------------------------
+// WaylandWindow Implementation (placeholder)
+// ----------------------------------------
+struct WaylandWindow::WaylandData {
+    // Wayland-specific data would go here
+};
+
+WaylandWindow::WaylandWindow() : data(std::make_unique<WaylandData>()) {}
+
+WaylandWindow::~WaylandWindow() = default;
+
+bool WaylandWindow::init(int width, int height, const char* title) {
+    std::cout << "Initializing Wayland window: " << title << " (" << width << "x" << height << ")" << std::endl;
+    // Wayland initialization would go here
+    // This is just a placeholder for now
+    return true;
+}
+
+void WaylandWindow::run() {
+    std::cout << "Running Wayland window (placeholder)" << std::endl;
+    // Wayland event loop would go here
+    // For now, just sleep for demonstration
+    sleep(5);
+}
+
+void WaylandWindow::redraw() {
+    // Wayland redraw would go here
+}
+#endif // __linux__
+
+// ----------------------------------------
+// WindowsWindow Implementation
+// ----------------------------------------
+#if defined(_WIN32) || defined(_WIN64)
+WindowsWindow::WindowsWindow() : hwnd(nullptr), hdc(nullptr), hInstance(GetModuleHandle(nullptr)) {}
+
+WindowsWindow::~WindowsWindow() {
+    // Cleanup resources
+    if (hwnd) {
+        DestroyWindow(hwnd);
+    }
+}
+
+LRESULT CALLBACK WindowsWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    WindowsWindow* window = nullptr;
+    
+    if (uMsg == WM_CREATE) {
+        CREATESTRUCT* createStruct = reinterpret_cast<CREATESTRUCT*>(lParam);
+        window = static_cast<WindowsWindow*>(createStruct->lpCreateParams);
+        SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(window));
+    } else {
+        window = reinterpret_cast<WindowsWindow*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+    }
+    
+    switch (uMsg) {
+        case WM_PAINT:
+            if (window) {
+                window->redraw();
+            }
+            return 0;
+            
+        case WM_DESTROY:
+            PostQuitMessage(0);
+            return 0;
+            
+        default:
+            return DefWindowProc(hwnd, uMsg, wParam, lParam);
+    }
+}
+
+bool WindowsWindow::init(int width, int height, const char* title) {
+    // Register window class
+    WNDCLASSEX wc = {};
+    wc.cbSize = sizeof(WNDCLASSEX);
+    wc.style = CS_HREDRAW | CS_VREDRAW;
+    wc.lpfnWndProc = WindowProc;
+    wc.hInstance = hInstance;
+    wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
+    wc.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
+    wc.lpszClassName = "VistaWindowClass";
+    
+    if (!RegisterClassEx(&wc)) {
+        std::cerr << "Failed to register window class" << std::endl;
+        return false;
+    }
+    
+    // Create window
+    hwnd = CreateWindowEx(
+        0,
+        "VistaWindowClass",
+        title,
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, CW_USEDEFAULT,
+        width, height,
+        nullptr,
+        nullptr,
+        hInstance,
+        this  // Pass 'this' pointer to WM_CREATE
+    );
+    
+    if (!hwnd) {
+        std::cerr << "Failed to create window" << std::endl;
+        return false;
+    }
+    
+    // Show window
+    ShowWindow(hwnd, SW_SHOW);
+    UpdateWindow(hwnd);
+    
+    // Get DC for painting
+    hdc = GetDC(hwnd);
+    
+    return true;
+}
+
+void WindowsWindow::run() {
+    MSG msg = {};
+    while (GetMessage(&msg, nullptr, 0, 0)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+}
+
+void WindowsWindow::redraw() {
+    if (!hdc) return;
+    
+    // Example drawing code
+    RECT rect;
+    GetClientRect(hwnd, &rect);
+    
+    // Draw a blue rectangle
+    HBRUSH blueBrush = CreateSolidBrush(RGB(0, 0, 255));
+    RECT blueRect = {50, 50, 250, 150};
+    FillRect(hdc, &blueRect, blueBrush);
+    DeleteObject(blueBrush);
+    
+    // Draw a red rectangle outline
+    HPEN redPen = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
+    HPEN oldPen = (HPEN)SelectObject(hdc, redPen);
+    RECT redRect = {300, 100, 500, 250};
+    Rectangle(hdc, redRect.left, redRect.top, redRect.right, redRect.bottom);
+    SelectObject(hdc, oldPen);
+    DeleteObject(redPen);
+}
+#endif // _WIN32 || _WIN64
+
+// ----------------------------------------
+// MacOSWindow Implementation (placeholder)
+// ----------------------------------------
+#if defined(__APPLE__)
+MacOSWindow::MacOSWindow() : nsWindow(nullptr), nsView(nullptr) {}
+
+MacOSWindow::~MacOSWindow() {
+    // Cleanup Cocoa resources would go here
+}
+
+bool MacOSWindow::init(int width, int height, const char* title) {
+    std::cout << "Initializing macOS window: " << title << " (" << width << "x" << height << ")" << std::endl;
+    // Cocoa initialization would go here
+    // This is just a placeholder
+    return true;
+}
+
+void MacOSWindow::run() {
+    std::cout << "Running macOS window (placeholder)" << std::endl;
+    // Cocoa event loop would go here
+}
+
+void MacOSWindow::redraw() {
+    // Cocoa drawing would go here
+}
+#endif // __APPLE__

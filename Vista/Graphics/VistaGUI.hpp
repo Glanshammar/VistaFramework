@@ -1,24 +1,140 @@
 #pragma once
 #include <cstdint>
+#include <memory>
+#include <string>
 #include <VThread>
 #include <VGlobals>
 #include <VApplication>
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
 
-class X11Window {
+// Define platform-specific includes based on OS
+#if defined(_WIN32) || defined(_WIN64)
+    #include <windows.h>
+#elif defined(__linux__)
+    // Linux-specific includes
+    #include <X11/Xlib.h>
+    #include <X11/Xutil.h>
+    // We'll check for Wayland at runtime
+#elif defined(__APPLE__)
+    // macOS-specific includes
+    #include <Cocoa/Cocoa.h>
+#endif
+
+// Forward declarations
+class WindowBase;
+class X11Window;
+class WaylandWindow;
+class WindowsWindow;
+class MacOSWindow;
+
+// Platform-agnostic GUI class
+class VistaGUI : public VApplication {
 public:
-    X11Window();
-    ~X11Window();
+    VistaGUI();
+    ~VistaGUI();
 
-    bool init(int width = 800, int height = 600, const char* title = "Vista X11 Window");
+    // Platform enum for detecting the current platform
+    enum class Platform {
+        Unknown,
+        Windows,
+        LinuxX11,
+        LinuxWayland,
+        MacOS
+    };
+
+    // Initialize with common parameters
+    bool init(int width = 800, int height = 600, const char* title = "Vista Window");
     void run();
+    
+    // Platform detection methods
+    static Platform detectPlatform();
+    static bool isWaylandSession();
 
 private:
-    void redraw();
+    std::unique_ptr<WindowBase> window;
+    Platform platform;
+};
+
+// Base window interface
+class WindowBase {
+public:
+    virtual ~WindowBase() = default;
+    virtual bool init(int width, int height, const char* title) = 0;
+    virtual void run() = 0;
+    virtual void redraw() = 0;
+};
+
+#if defined(__linux__)
+// X11 Window implementation
+class X11Window : public WindowBase {
+public:
+    X11Window();
+    ~X11Window() override;
+
+    bool init(int width, int height, const char* title) override;
+    void run() override;
+    void redraw() override;
+
+private:
     void handleMouseClick(int x, int y);
 
     Display* display;
     Window window;
     int screen;
 };
+
+// Wayland Window implementation
+class WaylandWindow : public WindowBase {
+public:
+    WaylandWindow();
+    ~WaylandWindow() override;
+
+    bool init(int width, int height, const char* title) override;
+    void run() override;
+    void redraw() override;
+
+private:
+    // Wayland specific members would go here
+    // This is a placeholder for now
+    struct WaylandData;
+    std::unique_ptr<WaylandData> data;
+};
+#endif
+
+#if defined(_WIN32) || defined(_WIN64)
+// Windows Window implementation
+class WindowsWindow : public WindowBase {
+public:
+    WindowsWindow();
+    ~WindowsWindow() override;
+
+    bool init(int width, int height, const char* title) override;
+    void run() override;
+    void redraw() override;
+
+private:
+    static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    
+    HWND hwnd;
+    HDC hdc;
+    HINSTANCE hInstance;
+};
+#endif
+
+#if defined(__APPLE__)
+// macOS Window implementation
+class MacOSWindow : public WindowBase {
+public:
+    MacOSWindow();
+    ~MacOSWindow() override;
+
+    bool init(int width, int height, const char* title) override;
+    void run() override;
+    void redraw() override;
+
+private:
+    // Cocoa specific members would go here
+    // This is a placeholder for now
+    void* nsWindow;  // NSWindow*
+    void* nsView;    // NSView*
+};
+#endif
