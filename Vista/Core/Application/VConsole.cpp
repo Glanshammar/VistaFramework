@@ -61,7 +61,7 @@ void setTextColor(Color color) {
 #endif
 }
 
-void VDebug(Level level, const std::string& message, bool newline) {
+void VDebug(Level level, const std::string& message) {
     std::ostringstream formattedMessage;
 
     switch (level) {
@@ -78,16 +78,15 @@ void VDebug(Level level, const std::string& message, bool newline) {
         formattedMessage << "[ERROR] ";
         break;
     default:
+        setTextColor(Color::DEFAULT);
+        formattedMessage << "[DEBUG] ";
         break;
     }
 
     formattedMessage << message;
 
-    if (newline) {
-        formattedMessage << std::endl;
-    }
-
     std::cout << formattedMessage.str();
+    std::cout << std::endl;
     setTextColor(Color::DEFAULT);
 }
 
