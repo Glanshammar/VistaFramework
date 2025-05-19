@@ -1,4 +1,5 @@
 #include "VistaGUI.hpp"
+#include "VXamlParser.hpp"
 #include <iostream>
 #include <cstdlib>
 
@@ -18,6 +19,13 @@ VistaGUI::VistaGUI() : platform(Platform::Unknown) {
 }
 
 VistaGUI::~VistaGUI() = default;
+
+void VistaGUI::setXamlWindow(std::shared_ptr<XamlWindow> xamlWindow) {
+    this->xamlWindow = xamlWindow;
+    if (window) {
+        window->setXamlWindow(xamlWindow);
+    }
+}
 
 bool VistaGUI::init(int width, int height, const char* title) {
     platform = detectPlatform();
@@ -58,7 +66,17 @@ bool VistaGUI::init(int width, int height, const char* title) {
         return false;
     }
     
-    return window->init(width, height, title);
+    // Initialize the window
+    if (!window->init(width, height, title)) {
+        return false;
+    }
+    
+    // Set the XAML window if one exists
+    if (xamlWindow) {
+        window->setXamlWindow(xamlWindow);
+    }
+    
+    return true;
 }
 
 void VistaGUI::run() {
@@ -175,22 +193,81 @@ void X11Window::run() {
 }
 
 void X11Window::redraw() {
-    GC gc = XCreateGC(display, window, 0, nullptr);
+    if (!xamlWindow) return;
 
-    XSetForeground(display, gc, 0x0000FF);
-    XFillRectangle(display, window, gc, 50, 50, 200, 100);
-    XSetForeground(display, gc, 0xFF0000);
-    XDrawRectangle(display, window, gc, 300, 100, 200, 150);
+    GC gc = XCreateGC(display, window, 0, nullptr);
+    XSetForeground(display, gc, 0x000000); // Black text
+
+    // Draw all XAML elements
+    for (const auto& child : xamlWindow->getChildren()) {
+        drawXamlElement(child, 0, 0);
+    }
+
+    XFreeGC(display, gc);
+}
+
+void X11Window::drawXamlElement(const std::shared_ptr<XamlElement>& element, int x, int y) {
+    if (!element) return;
+
+    if (auto grid = std::dynamic_pointer_cast<XamlGrid>(element)) {
+        // Draw grid children
+        for (const auto& child : grid->getChildren()) {
+            drawXamlElement(child, x, y);
+        }
+    } else if (auto textBlock = std::dynamic_pointer_cast<XamlTextBlock>(element)) {
+        drawTextBlock(textBlock, x, y);
+    } else if (auto textBox = std::dynamic_pointer_cast<XamlTextBox>(element)) {
+        drawTextBox(textBox, x, y);
+    } else if (auto button = std::dynamic_pointer_cast<XamlButton>(element)) {
+        drawButton(button, x, y);
+    }
+}
+
+void X11Window::drawTextBlock(const std::shared_ptr<XamlTextBlock>& textBlock, int x, int y) {
+    if (!textBlock) return;
+
+    GC gc = XCreateGC(display, window, 0, nullptr);
+    XSetForeground(display, gc, 0x000000); // Black text
+
+    // Draw the text
+    XDrawString(display, window, gc, x, y + 15, textBlock->getText().c_str(), textBlock->getText().length());
+
+    XFreeGC(display, gc);
+}
+
+void X11Window::drawTextBox(const std::shared_ptr<XamlTextBox>& textBox, int x, int y) {
+    if (!textBox) return;
+
+    GC gc = XCreateGC(display, window, 0, nullptr);
+    XSetForeground(display, gc, 0x000000); // Black border
+
+    // Draw text box border
+    XDrawRectangle(display, window, gc, x, y, textBox->getWidth(), 25);
+
+    XFreeGC(display, gc);
+}
+
+void X11Window::drawButton(const std::shared_ptr<XamlButton>& button, int x, int y) {
+    if (!button) return;
+
+    GC gc = XCreateGC(display, window, 0, nullptr);
+    XSetForeground(display, gc, 0x000000); // Black border
+
+    // Draw button border
+    XDrawRectangle(display, window, gc, x, y, button->getWidth(), button->getHeight());
+
+    // Draw button text
+    XDrawString(display, window, gc, x + 10, y + 20, button->getContent().c_str(), button->getContent().length());
+
     XFreeGC(display, gc);
 }
 
 void X11Window::handleMouseClick(int x, int y) {
     std::cout << "Mouse clicked at: (" << x << ", " << y << ")" << std::endl;
+}
 
-    GC gc = XCreateGC(display, window, 0, nullptr);
-    XSetForeground(display, gc, 0x00FF00); // Green
-    XFillRectangle(display, window, gc, x-5, y-5, 10, 10);
-    XFreeGC(display, gc);
+void X11Window::setXamlWindow(std::shared_ptr<XamlWindow> xamlWindow) {
+    this->xamlWindow = xamlWindow;
 }
 
 // ----------------------------------------
@@ -220,6 +297,11 @@ void WaylandWindow::run() {
 
 void WaylandWindow::redraw() {
     // Wayland redraw would go here
+}
+
+void WaylandWindow::setXamlWindow(std::shared_ptr<XamlWindow> xamlWindow) {
+    // Wayland implementation will be added later
+    std::cout << "Wayland XAML support not implemented yet" << std::endl;
 }
 #endif // __linux__
 

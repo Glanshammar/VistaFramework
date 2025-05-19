@@ -5,6 +5,7 @@
 #include <VThread>
 #include <VGlobals>
 #include <VApplication>
+#include "VXamlParser.hpp"
 
 // Define platform-specific includes based on OS
 #if defined(_WIN32) || defined(_WIN64)
@@ -49,9 +50,13 @@ public:
     static Platform detectPlatform();
     static bool isWaylandSession();
 
+    // Set the XAML window to be rendered
+    void setXamlWindow(std::shared_ptr<XamlWindow> xamlWindow);
+
 private:
     std::unique_ptr<WindowBase> window;
     Platform platform;
+    std::shared_ptr<XamlWindow> xamlWindow;
 };
 
 // Base window interface
@@ -61,6 +66,7 @@ public:
     virtual bool init(int width, int height, const char* title) = 0;
     virtual void run() = 0;
     virtual void redraw() = 0;
+    virtual void setXamlWindow(std::shared_ptr<XamlWindow> xamlWindow) = 0;
 };
 
 #if defined(__linux__)
@@ -73,13 +79,19 @@ public:
     bool init(int width, int height, const char* title) override;
     void run() override;
     void redraw() override;
+    void setXamlWindow(std::shared_ptr<XamlWindow> xamlWindow) override;
 
 private:
     void handleMouseClick(int x, int y);
+    void drawXamlElement(const std::shared_ptr<XamlElement>& element, int x, int y);
+    void drawTextBlock(const std::shared_ptr<XamlTextBlock>& textBlock, int x, int y);
+    void drawTextBox(const std::shared_ptr<XamlTextBox>& textBox, int x, int y);
+    void drawButton(const std::shared_ptr<XamlButton>& button, int x, int y);
 
     Display* display;
     Window window;
     int screen;
+    std::shared_ptr<XamlWindow> xamlWindow;
 };
 
 // Wayland Window implementation
@@ -91,6 +103,7 @@ public:
     bool init(int width, int height, const char* title) override;
     void run() override;
     void redraw() override;
+    void setXamlWindow(std::shared_ptr<XamlWindow> xamlWindow) override;
 
 private:
     // Wayland specific members would go here
@@ -110,6 +123,7 @@ public:
     bool init(int width, int height, const char* title) override;
     void run() override;
     void redraw() override;
+    void setXamlWindow(std::shared_ptr<XamlWindow> xamlWindow) override;
 
 private:
     static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -130,6 +144,7 @@ public:
     bool init(int width, int height, const char* title) override;
     void run() override;
     void redraw() override;
+    void setXamlWindow(std::shared_ptr<XamlWindow> xamlWindow) override;
 
 private:
     // Cocoa specific members would go here

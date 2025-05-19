@@ -107,6 +107,7 @@ set(VistaCoreFiles
 
 set(VistaGraphicsFiles
     "Vista/Graphics/VistaGUI.cpp" "Vista/Graphics/VistaGUI.hpp"
+    "Vista/Graphics/VXamlParser.cpp" "Vista/Graphics/VXamlParser.hpp"
 )
 
 set(VistaSerialsFiles
@@ -159,6 +160,17 @@ target_link_libraries(VistaGUI
     VistaFramework
 )
 
+add_executable(VistaXaml
+    ${VistaCoreFiles}
+    ${VistaGraphicsFiles}
+    ${VistaSerialsFiles}
+    "Vista/.tests/XamlTest.cpp"
+)
+target_link_libraries(VistaXaml
+    PUBLIC
+    VistaFramework
+)
+
 # Add install rules for cross-platform deployment
 install(TARGETS VistaFramework
     ARCHIVE DESTINATION lib
@@ -166,6 +178,6 @@ install(TARGETS VistaFramework
     RUNTIME DESTINATION bin
 )
 
-install(TARGETS VistaTest VistaGUI
+install(TARGETS VistaTest VistaGUI VistaXaml
     RUNTIME DESTINATION bin
 )

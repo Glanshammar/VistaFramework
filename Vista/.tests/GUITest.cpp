@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
     std::cout << std::endl;
     
     // Initialize the window with default parameters
-    if (!gui.init(800, 600, "Vista Cross-Platform Window")) {
+    if (!gui.init(1280, 720, "Vista Cross-Platform Window")) {
         std::cerr << "Failed to initialize GUI window" << std::endl;
         return 1;
     }
