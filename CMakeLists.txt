@@ -143,6 +143,7 @@ add_executable(VistaTest
     "Vista/.tests/ConsoleTest.cpp" "Vista/.tests/ConsoleTest.hpp"
     "Vista/.tests/ObjectTest.cpp" "Vista/.tests/ObjectTest.hpp"
     "Vista/.tests/ArrayTest.cpp" "Vista/.tests/ArrayTest.hpp"
+    "Vista/.tests/VThreadTest.cpp" "Vista/.tests/VThreadTest.hpp"
 )
 target_link_libraries(VistaTest
     PUBLIC
