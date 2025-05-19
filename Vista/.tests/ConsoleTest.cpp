@@ -1,37 +1,13 @@
 #include "ConsoleTest.hpp"
 #include <VistaCore>
 #include <VConsole>
-#include <VThread>
 #include <VGlobals>
-
-int32_t lastValue;
-int32_t testValue = 50;
-
-void ThreadFunction()
-{
-    ++testValue;
-}
 
 void ConsoleTest(){
     VString testString = "Hello, World!";
 
     VDebug(Level::Info, "This is an informational message.");
-    VDebug(Level::Warning, "Value might be out of range: " + std::to_string(testValue));
+    VDebug(Level::Warning, "Value might be out of range: 50");
     VDebug(Level::Error, "Critical error occurred!");
     VPrint(testString);
-
-    VThreadGroup threadGroup;
-
-    for (Range(50))
-    {
-        lastValue = testValue;
-        threadGroup.addThread(VThread(ThreadFunction));
-    }
-
-    threadGroup.startAll();
-    threadGroup.joinAll();
-
-    VPrint(std::to_string(lastValue));
-    VPrint(std::to_string(testValue));
-    VPrint("Difference: " + std::to_string(testValue - lastValue));
 }
