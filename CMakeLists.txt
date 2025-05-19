@@ -181,3 +181,10 @@ install(TARGETS VistaFramework
 install(TARGETS VistaTest VistaGUI VistaXaml
     RUNTIME DESTINATION bin
 )
+
+# Copy example.xaml to the build directory
+configure_file(
+    "${CMAKE_SOURCE_DIR}/Vista/.tests/example.xaml"
+    "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/example.xaml"
+    COPYONLY
+)
