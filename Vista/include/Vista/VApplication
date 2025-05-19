@@ -1,3 +1,4 @@
 #pragma once
 #include "../../Core/Application/VApplication.hpp"
 #include "../../Graphics/VistaGUI.hpp"
+#include "../../Graphics/VXamlParser.hpp"
