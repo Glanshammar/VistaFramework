@@ -6,6 +6,31 @@ VApplication::VApplication() {
 
 VApplication::~VApplication() = default;
 
+std::filesystem::path VApplication::getExecutablePath() {
+#if defined(_WIN32) || defined(_WIN64)
+    char path[MAX_PATH];
+    GetModuleFileNameA(nullptr, path, MAX_PATH);
+    return std::filesystem::path(path);
+#elif defined(__linux__)
+    char path[PATH_MAX];
+    ssize_t count = readlink("/proc/self/exe", path, PATH_MAX);
+    if (count == -1) {
+        throw std::runtime_error("Failed to get executable path");
+    }
+    path[count] = '\0';
+    return std::filesystem::path(path);
+#elif defined(__APPLE__)
+    char path[PROC_PIDPATHINFO_MAXSIZE];
+    pid_t pid = getpid();
+    if (proc_pidpath(pid, path, sizeof(path)) <= 0) {
+        throw std::runtime_error("Failed to get executable path");
+    }
+    return std::filesystem::path(path);
+#else
+    throw std::runtime_error("Unsupported platform");
+#endif
+}
+
 #if defined(_WIN32) || defined(_WIN64)
 void VApplication::setTitleBar(const std::string& title) {
     SetConsoleTitleA(title.c_str()); // Use SetConsoleTitleA for narrow string

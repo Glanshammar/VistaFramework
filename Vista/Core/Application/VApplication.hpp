@@ -2,6 +2,7 @@
 
 #include <string>
 #include <iostream>
+#include <filesystem>
 #include <VObject>
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -20,4 +21,7 @@ public:
     ~VApplication();
     static void setTitleBar(const std::string& title = "VistaCore Application");
     static void setIcon(const std::string& iconPath = "icon.ico");
+    
+    // Get the path to the current executable
+    static std::filesystem::path getExecutablePath();
 };
