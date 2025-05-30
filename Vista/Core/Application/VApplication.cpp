@@ -4,9 +4,9 @@
 
 // Static member initialization
 VApplication* VApplication::instance = nullptr;
-std::string VApplication::appName = "VistaCore Application";
+std::string VApplication::appName = "Vista Application";
 std::string VApplication::appVersion = "1.0.0";
-std::string VApplication::orgName = "VistaCore";
+std::string VApplication::orgName = "Vista";
 std::string VApplication::currentStyle = "default";
 
 VApplication::VApplication() {
