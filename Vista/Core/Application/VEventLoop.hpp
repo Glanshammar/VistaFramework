@@ -1,11 +1,11 @@
 #pragma once
 
 #include "VEvent.hpp"
+#include "VThread.hpp"
 #include <queue>
 #include <mutex>
 #include <condition_variable>
 #include <atomic>
-#include <thread>
 #include <chrono>
 
 struct PendingEvent {
@@ -26,13 +26,21 @@ public:
     void quit();
     bool isRunning() const;
 
+    // Thread management
+    void pauseEventProcessing();
+    void resumeEventProcessing();
+    void setThreadCount(size_t count);
+    size_t threadCount() const;
+
 private:
     std::queue<PendingEvent> eventQueue;
     mutable std::mutex queueMutex;
     std::condition_variable queueCondition;
     std::atomic<bool> running;
-    std::thread eventThread;
+    VThreadGroup eventThreads;
+    size_t numThreads;
 
     void processEvent(const PendingEvent& event);
     void eventLoop();
+    void initializeThreads();
 }; 

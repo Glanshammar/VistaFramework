@@ -13,6 +13,7 @@
 #include <sstream>
 #include <VString>
 #include <VConsole>
+#include <VEvent>
 
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -64,6 +65,11 @@ public:
 
     void onDestroyed(const Signal<VObject*>::SlotType& slot) {
         destroyed.connect(slot);
+    }
+
+    // Event handling
+    virtual bool event(VEvent* event) {
+        return false; // Base implementation does nothing
     }
 
 protected:

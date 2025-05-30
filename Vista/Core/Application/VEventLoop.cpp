@@ -1,15 +1,52 @@
 #include "VEventLoop.hpp"
 #include <algorithm>
 
-VEventLoop::VEventLoop() : running(true) {
-    eventThread = std::thread(&VEventLoop::eventLoop, this);
+VEventLoop::VEventLoop() 
+    : running(false)
+    , numThreads(1) {
+    initializeThreads();
 }
 
 VEventLoop::~VEventLoop() {
     quit();
-    if (eventThread.joinable()) {
-        eventThread.join();
+}
+
+void VEventLoop::initializeThreads() {
+    eventThreads.clear();
+    for (size_t i = 0; i < numThreads; ++i) {
+        eventThreads.addThread([this]() {
+            eventLoop();
+        });
     }
+}
+
+void VEventLoop::setThreadCount(size_t count) {
+    if (count == 0) count = 1; // Ensure at least one thread
+    if (count != numThreads) {
+        bool wasRunning = running;
+        if (wasRunning) {
+            pauseEventProcessing();
+        }
+        numThreads = count;
+        initializeThreads();
+        if (wasRunning) {
+            resumeEventProcessing();
+        }
+    }
+}
+
+size_t VEventLoop::threadCount() const {
+    return numThreads;
+}
+
+void VEventLoop::pauseEventProcessing() {
+    running = false;
+    queueCondition.notify_all();
+}
+
+void VEventLoop::resumeEventProcessing() {
+    running = true;
+    queueCondition.notify_all();
 }
 
 void VEventLoop::postEvent(VObject* receiver, std::unique_ptr<VEvent> event) {
@@ -30,21 +67,46 @@ void VEventLoop::postEvent(VObject* receiver, std::unique_ptr<VEvent> event) {
 
 void VEventLoop::sendEvent(VObject* receiver, VEvent* event) {
     if (!receiver || !event) return;
-    processEvent({receiver, std::unique_ptr<VEvent>(event), std::chrono::system_clock::now()});
+    processEvent(PendingEvent{receiver, std::unique_ptr<VEvent>(event), std::chrono::system_clock::now()});
 }
 
 void VEventLoop::processEvents() {
-    std::queue<PendingEvent> eventsToProcess;
-    
-    {
-        std::lock_guard<std::mutex> lock(queueMutex);
-        if (eventQueue.empty()) return;
-        eventsToProcess = std::move(eventQueue);
+    std::unique_lock<std::mutex> lock(queueMutex);
+    while (!eventQueue.empty()) {
+        PendingEvent event = std::move(eventQueue.front());
+        eventQueue.pop();
+        lock.unlock();
+        
+        processEvent(event);
+        
+        lock.lock();
     }
-    
-    while (!eventsToProcess.empty()) {
-        processEvent(eventsToProcess.front());
-        eventsToProcess.pop();
+}
+
+void VEventLoop::processEvent(const PendingEvent& event) {
+    if (event.receiver && event.event) {
+        event.receiver->event(event.event.get());
+    }
+}
+
+void VEventLoop::eventLoop() {
+    while (true) {
+        std::unique_lock<std::mutex> lock(queueMutex);
+        queueCondition.wait(lock, [this] {
+            return !running || !eventQueue.empty();
+        });
+
+        if (!running && eventQueue.empty()) {
+            break;
+        }
+
+        if (!eventQueue.empty()) {
+            PendingEvent event = std::move(eventQueue.front());
+            eventQueue.pop();
+            lock.unlock();
+            
+            processEvent(event);
+        }
     }
 }
 
@@ -56,40 +118,9 @@ bool VEventLoop::hasPendingEvents() const {
 void VEventLoop::quit() {
     running = false;
     queueCondition.notify_all();
+    eventThreads.joinAll();
 }
 
 bool VEventLoop::isRunning() const {
     return running;
-}
-
-void VEventLoop::processEvent(const PendingEvent& event) {
-    if (!event.receiver || !event.event) return;
-    
-    // Here you would typically call the event handler on the receiver
-    // For now, we'll just check if the event is accepted
-    if (!event.event->isAccepted()) {
-        // Handle unaccepted events if needed
-    }
-}
-
-void VEventLoop::eventLoop() {
-    while (running) {
-        std::unique_lock<std::mutex> lock(queueMutex);
-        queueCondition.wait(lock, [this] { 
-            return !running || !eventQueue.empty(); 
-        });
-        
-        if (!running) break;
-        
-        // Process all pending events
-        while (!eventQueue.empty()) {
-            PendingEvent event = std::move(eventQueue.front());
-            eventQueue.pop();
-            lock.unlock();
-            
-            processEvent(event);
-            
-            lock.lock();
-        }
-    }
 } 
