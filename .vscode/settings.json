@@ -2,5 +2,15 @@
     "files.associations": {
         "iostream": "cpp",
         "vapplication": "cpp"
-    }
+    },
+    "C_Cpp.intelliSenseEngine": "default",
+    "C_Cpp.errorSquiggles": "enabled",
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}/**",
+        "${workspaceFolder}/Vista/include/**",
+        "${workspaceFolder}/Vista/Core/**"
+    ],
+    "C_Cpp.default.cppStandard": "c++23",
+    "C_Cpp.default.intelliSenseMode": "linux-clang-x64"
 }
