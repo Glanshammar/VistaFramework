@@ -1,7 +1,7 @@
 #pragma once
 
-#include "VEvent.hpp"
-#include "VThread.hpp"
+#include <VEvent>
+#include <VThread>
 #include <queue>
 #include <mutex>
 #include <condition_variable>

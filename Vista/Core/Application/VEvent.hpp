@@ -1,9 +1,9 @@
 #pragma once
 
-#include <VObject>
+#include <string>
+#include <chrono>
 #include <memory>
 #include <typeindex>
-#include <unordered_map>
 
 class VEvent {
 public:
@@ -39,6 +39,9 @@ public:
 
     // Event timestamp
     std::chrono::system_clock::time_point timestamp() const { return eventTimestamp; }
+
+    // Type identification for custom events
+    virtual std::type_index getEventType() const { return std::type_index(typeid(VEvent)); }
 
 private:
     Type eventType;

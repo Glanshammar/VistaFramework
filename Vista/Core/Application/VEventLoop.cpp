@@ -12,11 +12,12 @@ VEventLoop::~VEventLoop() {
 }
 
 void VEventLoop::initializeThreads() {
-    eventThreads.clear();
+    eventThreads.joinAll();
     for (size_t i = 0; i < numThreads; ++i) {
-        eventThreads.addThread([this]() {
+        VThread thread([this]() {
             eventLoop();
-        });
+        }, "EventThread" + std::to_string(i));
+        eventThreads.addThread(std::move(thread));
     }
 }
 
