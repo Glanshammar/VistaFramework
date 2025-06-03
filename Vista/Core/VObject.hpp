@@ -52,7 +52,7 @@ private:
 
 public:
     VObject();
-    ~VObject();
+    virtual ~VObject();
 
     void setName(const std::string& name);
     [[nodiscard]] std::string getName() const;

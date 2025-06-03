@@ -4,6 +4,8 @@
 #include <chrono>
 #include <memory>
 #include <typeindex>
+#include <vector>
+#include <functional>
 
 class VEvent {
 public:

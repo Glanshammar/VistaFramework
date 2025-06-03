@@ -110,7 +110,7 @@ set(VistaCoreFiles
     "Vista/Core/Filesystem/VFile.cpp" "Vista/Core/Filesystem/VFile.hpp"
     "Vista/Core/DataTypes/VString.cpp" "Vista/Core/DataTypes/VString.hpp"
     "Vista/Core/DataTypes/VArray.cpp" "Vista/Core/DataTypes/VArray.hpp"
-    "Vista/Core/DataTypes/VAny.cpp" "Vista/Core/DataTypes/VAny.hpp"
+    "Vista/Core/DataTypes/VAny.hpp"
     "Vista/Core/DataTypes/VInt.tpp" "Vista/Core/DataTypes/VInt.hpp"
 )
 

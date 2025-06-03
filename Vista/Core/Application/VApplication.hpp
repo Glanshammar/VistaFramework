@@ -1,13 +1,15 @@
 #pragma once
 
+#include <cstdint>
+#include <atomic>
 #include <string>
 #include <iostream>
 #include <filesystem>
-#include <VObject>
 #include <queue>
 #include <functional>
 #include <memory>
 #include <mutex>
+#include <VObject>
 
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
@@ -26,7 +28,7 @@ class VEventLoop;
 class VApplication : public VObject {
 public:
     VApplication();
-    ~VApplication();
+    ~VApplication() override;
 
     // Core application methods
     static void setTitleBar(const std::string& title = "VistaCore Application");
@@ -63,8 +65,8 @@ public:
 private:
     static VApplication* instance;
     std::unique_ptr<VEventLoop> eventLoop;
-    std::atomic<bool> running;
-    std::atomic<int> exitCode_;
+    std::atomic<bool> running{false};
+    std::atomic<int32_t> exitCode_{0};
     static std::string appName;
     static std::string appVersion;
     static std::string orgName;
