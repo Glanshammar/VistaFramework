@@ -109,9 +109,9 @@ set(VistaCoreFiles
     "Vista/Core/VThread.cpp" "Vista/Core/VThread.hpp"
     "Vista/Core/Filesystem/VFile.cpp" "Vista/Core/Filesystem/VFile.hpp"
     "Vista/Core/DataTypes/VString.cpp" "Vista/Core/DataTypes/VString.hpp"
-    "Vista/Core/DataTypes/VArray.hpp" "Vista/Core/DataTypes/VAny.hpp"
-    "Vista/Core/DataTypes/VArray.tpp" "Vista/Core/DataTypes/VAny.tpp"
     "Vista/Core/DataTypes/VInt.tpp" "Vista/Core/DataTypes/VInt.hpp"
+    "Vista/Core/DataTypes/VAny.hpp" "Vista/Core/DataTypes/VAny.tpp"
+    "Vista/Core/DataTypes/VArraySpecializations.cpp"
 )
 
 set(VistaGraphicsFiles
@@ -153,6 +153,7 @@ add_executable(VistaTest
     "Vista/.tests/ObjectTest.cpp" "Vista/.tests/ObjectTest.hpp"
     "Vista/.tests/ArrayTest.cpp" "Vista/.tests/ArrayTest.hpp"
     "Vista/.tests/VThreadTest.cpp" "Vista/.tests/VThreadTest.hpp"
+    "Vista/.tests/VAnyTest.cpp" "Vista/.tests/VAnyTest.hpp"
 )
 target_link_libraries(VistaTest
     PUBLIC
