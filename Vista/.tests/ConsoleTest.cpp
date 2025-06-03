@@ -4,7 +4,7 @@
 #include <VGlobals>
 
 void ConsoleTest(){
-    VString testString = "Hello, World!";
+    VString testString = "Hello 👋 World 🌍";
 
     VDebug(Level::Info, "This is an informational message.");
     VDebug(Level::Warning, "Value might be out of range: 50");

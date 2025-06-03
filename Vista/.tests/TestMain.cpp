@@ -9,11 +9,13 @@
 #include <map>
 #include <functional>
 #include <vector>
+#include <stdexcept>
 
 using std::cout;
 using std::string;
 using std::vector;
 
+void Help();
 
 std::unordered_map<string, std::function<void()>> testMap = {
     {"console", ConsoleTest},
@@ -21,7 +23,16 @@ std::unordered_map<string, std::function<void()>> testMap = {
     {"object", ObjectTest},
     {"array", ArrayTest},
     {"thread", VThreadTest},
-    };
+    {"help", Help}
+};
+
+void Help()
+{
+    cout << "Available tests:" << std::endl;
+    for (const auto& [key, value] : testMap) {
+        cout << "  " << key << std::endl;
+    }
+}
 
 int main()
 {
@@ -52,8 +63,13 @@ int main()
 
         auto it = testMap.find(input);
         if (it != testMap.end()) {
-            // If found, execute the corresponding function
-            it->second();  // Call the function stored in the map
+            try {
+                it->second();  // Call the function stored in the map
+            } catch (const std::exception& e) {
+                cout << "\nError in test '" << input << "': " << e.what() << std::endl;
+            } catch (...) {
+                cout << "\nUnknown error occurred in test '" << input << "'" << std::endl;
+            }
         } else {
             cout << "Invalid test name." << std::endl;
         }

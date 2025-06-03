@@ -1,61 +1,61 @@
 #include "ArrayTest.hpp"
-#include "../Core/Application/VConsole.hpp"
+
 
 void ArrayTest()
 {
-    VArray<int> list;
-    list.append(10);
-    list.append(20);
-    list.append(30);
+    VArray list(typeid(int));
+    list.append<int>(10);
+    list.append<int>(20);
+    list.append<int>(30);
 
     VPrint("List size: ", list.size());
 
-    for (int & it : list) {
-        VPrint(it, " ");
+    for (auto it = list.begin(); it != list.end(); ++it) {
+        VPrint(*it, " ");
     }
-    std::cout << std::endl;
+    VPrint();
 
     list.removeItem(1);
 
-    for (int & it : list) {
-        std::cout << it << " ";
+    for (auto it = list.begin(); it != list.end(); ++it) {
+        VPrint(*it, " ");
     }
-    std::cout << std::endl;
+    VPrint();
 
-    list.replace(0, 100);
-    std::cout << "After replacing first element with 100: " << std::endl;
-    for (int & it : list) {
-        std::cout << it << " ";
+    list.replace<int>(0, 100);
+    VPrint("After replacing first element with 100: ");
+    for (auto it = list.begin(); it != list.end(); ++it) {
+        VPrint(*it, " ");
     }
-    std::cout << std::endl;
+    VPrint();
 
-    VPrint("List contains 100: ", list.contains(100) ? "Yes" : "No");
-    VPrint("List contains 30: ", list.contains(50) ? "Yes" : "No");
+    VPrint("List contains 100: ", list.contains<int>(100) ? "Yes" : "No");
+    VPrint("List contains 50: ", list.contains<int>(50) ? "Yes" : "No");
 
     list.clear();
     VPrint("List size after clear: ", list.size());
     VPrint("List is empty: ", list.empty() ? "Yes" : "No");
 
-    list.append(50);
-    list.append(60);
-    list.append(70);
-    std::cout << "List after appending 50, 60, 70: " << std::endl;
-    for (int & it : list) {
-        std::cout << it << " ";
+    list.append<int>(50);
+    list.append<int>(60);
+    list.append<int>(70);
+    VPrint("List after appending 50, 60, 70: ");
+    for (auto it = list.begin(); it != list.end(); ++it) {
+        VPrint(*it, " ");
     }
-    std::cout << std::endl;
+    VPrint();
 
     list.removeFirst();
-    std::cout << "List after removing first element: " << std::endl;
-    for (int & it : list) {
-        std::cout << it << " ";
+    VPrint("List after removing first element: ");
+    for (auto it = list.begin(); it != list.end(); ++it) {
+        VPrint(*it, " ");
     }
-    std::cout << std::endl;
+    VPrint();
 
     list.removeLast();
-    std::cout << "List after removing last element: " << std::endl;
-    for (int & it : list) {
-        std::cout << it << " ";
+    VPrint("List after removing last element: ");
+    for (auto it = list.begin(); it != list.end(); ++it) {
+        VPrint(*it, " ");
     }
-    std::cout << std::endl;
+    VPrint();
 }
