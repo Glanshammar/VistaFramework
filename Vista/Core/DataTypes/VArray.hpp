@@ -2,10 +2,12 @@
 #include <stdexcept>
 #include <cstring>
 #include <typeinfo>
+#include <VAny>
 
 class VArray {
 public:
     VArray();
+    explicit VArray(const std::type_info& type);
     ~VArray();
 
     // Type-safe operations
@@ -17,8 +19,7 @@ public:
         if (_size == _capacity) {
             resize(_capacity * 2);
         }
-        T* newElement = new T(value);
-        _data[_size++] = newElement;
+        _data[_size++] = new VAny(value);
     }
 
     template<typename T>
@@ -29,7 +30,32 @@ public:
         if (index < 0 || index >= _size) {
             throw std::out_of_range("Index out of range");
         }
-        return *static_cast<T*>(_data[index]);
+        return static_cast<VAny*>(_data[index])->cast<T>();
+    }
+
+    template<typename T>
+    void replace(int index, const T& value) {
+        if (typeid(T) != elementType) {
+            throw std::runtime_error("Type mismatch in VArray");
+        }
+        if (index < 0 || index >= _size) {
+            throw std::out_of_range("Index out of range");
+        }
+        delete static_cast<VAny*>(_data[index]);
+        _data[index] = new VAny(value);
+    }
+
+    template<typename T>
+    bool contains(const T& value) const {
+        if (typeid(T) != elementType) {
+            throw std::runtime_error("Type mismatch in VArray");
+        }
+        for (int i = 0; i < _size; ++i) {
+            if (static_cast<VAny*>(_data[i])->cast<T>() == value) {
+                return true;
+            }
+        }
+        return false;
     }
 
     void removeItem(int index);
@@ -48,7 +74,7 @@ public:
         iterator operator++(int);
         bool operator==(const iterator& other) const;
         bool operator!=(const iterator& other) const;
-        void* operator*() const;
+        VAny operator*() const;
 
     private:
         void** _ptr;
@@ -58,6 +84,8 @@ public:
     iterator begin();
     iterator end();
 
+    const std::type_info& elementType;
+
 private:
     void resize(int newCapacity);
     void cleanup();
@@ -65,5 +93,4 @@ private:
     void** _data;
     int _size;
     int _capacity;
-    const std::type_info& elementType;
 };

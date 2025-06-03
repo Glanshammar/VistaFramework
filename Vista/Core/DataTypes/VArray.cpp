@@ -5,6 +5,11 @@ VArray::VArray() : _size(0), _capacity(10), elementType(typeid(void)) {
     std::memset(_data, 0, _capacity * sizeof(void*));
 }
 
+VArray::VArray(const std::type_info& type) : _size(0), _capacity(10), elementType(type) {
+    _data = new void*[_capacity];
+    std::memset(_data, 0, _capacity * sizeof(void*));
+}
+
 VArray::~VArray() {
     cleanup();
 }
@@ -13,7 +18,7 @@ void VArray::removeItem(int index) {
     if (index < 0 || index >= _size) {
         throw std::out_of_range("Index out of range");
     }
-    delete _data[index];
+    delete static_cast<VAny*>(_data[index]);
     for (int i = index; i < _size - 1; ++i) {
         _data[i] = _data[i + 1];
     }
@@ -23,6 +28,9 @@ void VArray::removeItem(int index) {
 void VArray::clear() {
     cleanup();
     _size = 0;
+    _capacity = 10;
+    _data = new void*[_capacity];
+    std::memset(_data, 0, _capacity * sizeof(void*));
 }
 
 bool VArray::empty() const {
@@ -40,7 +48,7 @@ void VArray::removeLast() {
     if (_size == 0) {
         throw std::out_of_range("Array is empty");
     }
-    delete _data[--_size];
+    delete static_cast<VAny*>(_data[--_size]);
 }
 
 int VArray::size() const {
@@ -68,7 +76,7 @@ void VArray::resize(int newCapacity) {
 
 void VArray::cleanup() {
     for (int i = 0; i < _size; ++i) {
-        delete _data[i];
+        delete static_cast<VAny*>(_data[i]);
     }
     delete[] _data;
     _data = nullptr;
@@ -97,6 +105,6 @@ bool VArray::iterator::operator!=(const iterator& other) const {
     return _ptr != other._ptr;
 }
 
-void* VArray::iterator::operator*() const {
-    return *_ptr;
+VAny VArray::iterator::operator*() const {
+    return *static_cast<VAny*>(*_ptr);
 } 
