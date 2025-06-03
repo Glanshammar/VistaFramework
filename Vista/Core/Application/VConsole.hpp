@@ -9,6 +9,7 @@
 #include <string_view>
 #include <source_location>
 #include <chrono>
+#include <VAny>
 
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
@@ -103,6 +104,70 @@ void VPrint(const PrintConfig& config, const T& first, const Args&... rest) {
             std::cout << std::endl;
         }
         // Reset color
+        setTextColor(Color::DEFAULT);
+    }
+}
+
+// Specialization for void* (used by VArray iterator)
+template<typename... Args>
+void VPrint(const PrintConfig& config, void* ptr, const Args&... rest) {
+    std::stringstream output;
+    
+    if (config.timestamp) {
+        output << formatTimestamp();
+    }
+    
+    if (config.sourceLocation) {
+        std::source_location location = std::source_location::current();
+        output << "[" << location.file_name() << ":" << location.line() << "] ";
+    }
+    
+    if (config.color != Color::DEFAULT) {
+        setTextColor(config.color);
+    }
+    
+    output << *static_cast<int*>(ptr);
+    std::cout << output.str();
+    
+    if constexpr (sizeof...(rest) > 0) {
+        std::cout << " ";
+        VPrint(config, rest...);
+    } else {
+        if (config.newline) {
+            std::cout << std::endl;
+        }
+        setTextColor(Color::DEFAULT);
+    }
+}
+
+// Specialization for VAny
+template<typename... Args>
+void VPrint(const PrintConfig& config, const VAny& any, const Args&... rest) {
+    std::stringstream output;
+    
+    if (config.timestamp) {
+        output << formatTimestamp();
+    }
+    
+    if (config.sourceLocation) {
+        std::source_location location = std::source_location::current();
+        output << "[" << location.file_name() << ":" << location.line() << "] ";
+    }
+    
+    if (config.color != Color::DEFAULT) {
+        setTextColor(config.color);
+    }
+    
+    output << any;
+    std::cout << output.str();
+    
+    if constexpr (sizeof...(rest) > 0) {
+        std::cout << " ";
+        VPrint(config, rest...);
+    } else {
+        if (config.newline) {
+            std::cout << std::endl;
+        }
         setTextColor(Color::DEFAULT);
     }
 }
