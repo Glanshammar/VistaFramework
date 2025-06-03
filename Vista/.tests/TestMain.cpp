@@ -3,6 +3,7 @@
 #include "ObjectTest.hpp"
 #include "ArrayTest.hpp"
 #include "VThreadTest.hpp"
+#include "VAnyTest.hpp"
 #include <VApplication>
 #include <iostream>
 #include <string>
@@ -21,8 +22,9 @@ std::unordered_map<string, std::function<void()>> testMap = {
     {"console", ConsoleTest},
     {"platform", PlatformTest},
     {"object", ObjectTest},
-    {"array", ArrayTest},
+    {"array", RunArrayTest},
     {"thread", VThreadTest},
+    {"any", []() { VAnyTest(); }},
     {"help", Help}
 };
 
