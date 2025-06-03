@@ -109,8 +109,7 @@ set(VistaCoreFiles
     "Vista/Core/VThread.cpp" "Vista/Core/VThread.hpp"
     "Vista/Core/Filesystem/VFile.cpp" "Vista/Core/Filesystem/VFile.hpp"
     "Vista/Core/DataTypes/VString.cpp" "Vista/Core/DataTypes/VString.hpp"
-    "Vista/Core/DataTypes/VArray.cpp" "Vista/Core/DataTypes/VArray.hpp"
-    "Vista/Core/DataTypes/VAny.hpp"
+    "Vista/Core/DataTypes/VArray.tpp" "Vista/Core/DataTypes/VAny.tpp"
     "Vista/Core/DataTypes/VInt.tpp" "Vista/Core/DataTypes/VInt.hpp"
 )
 

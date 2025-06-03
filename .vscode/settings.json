@@ -1,7 +1,8 @@
 {
     "files.associations": {
         "iostream": "cpp",
-        "vapplication": "cpp"
+        "vapplication": "cpp",
+        "varray": "cpp"
     },
     "C_Cpp.intelliSenseEngine": "default",
     "C_Cpp.errorSquiggles": "enabled",
