@@ -15,23 +15,7 @@ private:
     };
 
     template<typename T>
-    struct Holder : Base {
-        T value;
-        
-        explicit Holder(const T& v) : value(v) {}
-        
-        const std::type_info& type() const override {
-            return typeid(T);
-        }
-        
-        Base* clone() const override {
-            return new Holder(value);
-        }
-        
-        void print(std::ostream& os) const override {
-            os << value;
-        }
-    };
+    struct Holder;
 
     Base* content;
 
@@ -107,5 +91,24 @@ public:
             any.content->print(os);
         }
         return os;
+    }
+};
+
+template<typename T>
+struct VAny::Holder : VAny::Base {
+    T value;
+    
+    explicit Holder(const T& v) : value(v) {}
+    
+    const std::type_info& type() const override {
+        return typeid(T);
+    }
+    
+    Base* clone() const override {
+        return new Holder(value);
+    }
+    
+    void print(std::ostream& os) const override {
+        os << value;
     }
 };
