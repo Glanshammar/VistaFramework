@@ -1,7 +1,11 @@
 #include "VString.hpp"
 
 // Default Constructor
-VString::VString() : data(nullptr), length(0) {}
+VString::VString() : data(nullptr), length(0) {
+    // Initialize with an empty string (just a null terminator)
+    data = new char32_t[1];
+    data[0] = U'\0';
+}
 
 // Constructor with UTF-32 string
 VString::VString(const char32_t* str) : length(utf32Length(str)) {

@@ -6,4 +6,4 @@
 #define VISTA_VERSION_STRING "1.0.0"
 
 #define Range(x) int i = 0; i < x; i++
-#define RangeFrom(x, y) int i = x; i < y; i++
+#define RangeFromTo(x, y) int i = x; i < y; i++
