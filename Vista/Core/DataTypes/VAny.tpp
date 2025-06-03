@@ -69,7 +69,18 @@ public:
     }
     
     template<typename T>
-    T cast() const {
+    T& cast() {
+        if (!content) {
+            throw std::bad_cast();
+        }
+        if (typeid(T) != content->type()) {
+            throw std::bad_cast();
+        }
+        return static_cast<Holder<T>*>(content)->value;
+    }
+    
+    template<typename T>
+    const T& cast() const {
         if (!content) {
             throw std::bad_cast();
         }
