@@ -1,114 +1,159 @@
 #pragma once
-#include <typeinfo>
-#include <memory>
+#include "VAny.hpp"
 #include <stdexcept>
-#include <string>
-#include <iostream>
+#include <typeinfo>
+#include <sstream>
+#include <VString>
 
-class VAny {
-private:
-    struct Base {
-        virtual ~Base() = default;
-        virtual const std::type_info& type() const = 0;
-        virtual Base* clone() const = 0;
-        virtual void print(std::ostream& os) const = 0;
-    };
-
-    template<typename T>
-    struct Holder;
-
-    Base* content;
-
-public:
-    VAny() : content(nullptr) {}
-    
-    template<typename T>
-    explicit VAny(const T& value) : content(new Holder<T>(value)) {}
-    
-    VAny(const VAny& other) : content(other.content ? other.content->clone() : nullptr) {}
-    
-    VAny(VAny&& other) noexcept : content(other.content) {
-        other.content = nullptr;
-    }
-    
-    ~VAny() {
-        delete content;
-    }
-    
-    VAny& operator=(const VAny& other) {
-        if (this != &other) {
-            delete content;
-            content = other.content ? other.content->clone() : nullptr;
-        }
-        return *this;
-    }
-    
-    VAny& operator=(VAny&& other) noexcept {
-        if (this != &other) {
-            delete content;
-            content = other.content;
-            other.content = nullptr;
-        }
-        return *this;
-    }
-    
-    template<typename T>
-    T& cast() {
-        if (!content) {
-            throw std::bad_cast();
-        }
-        if (typeid(T) != content->type()) {
-            throw std::bad_cast();
-        }
-        return static_cast<Holder<T>*>(content)->value;
-    }
-    
-    template<typename T>
-    const T& cast() const {
-        if (!content) {
-            throw std::bad_cast();
-        }
-        if (typeid(T) != content->type()) {
-            throw std::bad_cast();
-        }
-        return static_cast<Holder<T>*>(content)->value;
-    }
-    
-    template<typename T>
-    bool is() const {
-        return content && typeid(T) == content->type();
-    }
-    
-    const std::type_info& type() const {
-        if (!content) {
-            return typeid(void);
-        }
-        return content->type();
-    }
-    
-    friend std::ostream& operator<<(std::ostream& os, const VAny& any) {
-        if (any.content) {
-            any.content->print(os);
-        }
-        return os;
-    }
-};
+inline VAny::VAny() = default;
 
 template<typename T>
-struct VAny::Holder : VAny::Base {
-    T value;
-    
-    explicit Holder(const T& v) : value(v) {}
-    
-    const std::type_info& type() const override {
-        return typeid(T);
+VAny::VAny(const T& value) : _value(std::make_unique<Model<T>>(value)) {}
+
+inline VAny::VAny(const VAny& other) : _value(other._value ? other._value->clone() : nullptr) {}
+
+inline VAny::VAny(VAny&& other) noexcept : _value(std::move(other._value)) {}
+
+inline VAny::~VAny() = default;
+
+inline VAny& VAny::operator=(const VAny& other) {
+    VAny temp(other);
+    swap(temp);
+    return *this;
+}
+
+inline VAny& VAny::operator=(VAny&& other) noexcept {
+    _value = std::move(other._value);
+    return *this;
+}
+
+template<typename T>
+VAny& VAny::operator=(const T& value) {
+    _value = std::make_unique<Model<T>>(value);
+    return *this;
+}
+
+inline bool VAny::isEmpty() const {
+    return _value == nullptr;
+}
+
+inline std::type_index VAny::type() const {
+    if (isEmpty()) {
+        return std::type_index(typeid(void));
     }
-    
-    Base* clone() const override {
-        return new Holder(value);
+    return _value->type();
+}
+
+inline std::string VAny::typeName() const {
+    if (isEmpty()) {
+        return "empty";
     }
-    
-    void print(std::ostream& os) const override {
-        os << value;
+    return _value->type().name();
+}
+
+template<typename T>
+bool VAny::isType() const {
+    if (isEmpty()) {
+        return false;
     }
-};
+    return _value->type() == std::type_index(typeid(T));
+}
+
+template<typename T>
+T& VAny::cast() {
+    if (!isType<T>()) {
+        throw std::bad_cast();
+    }
+    return static_cast<Model<T>*>(_value.get())->_value;
+}
+
+template<typename T>
+const T& VAny::cast() const {
+    if (!isType<T>()) {
+        throw std::bad_cast();
+    }
+    return static_cast<const Model<T>*>(_value.get())->_value;
+}
+
+template<typename T>
+T VAny::castOr(const T& defaultValue) const {
+    if (isType<T>()) {
+        return cast<T>();
+    }
+    return defaultValue;
+}
+
+inline void VAny::reset() {
+    _value.reset();
+}
+
+inline void VAny::swap(VAny& other) noexcept {
+    _value.swap(other._value);
+}
+
+// Generic toString implementation - falls back to type name
+template<typename T>
+std::string VAny::Model<T>::toString() const {
+    return "[" + std::string(typeid(T).name()) + "]";
+}
+
+// Specializations for common types
+template<>
+inline std::string VAny::Model<int>::toString() const {
+    return std::to_string(_value);
+}
+
+template<>
+inline std::string VAny::Model<unsigned int>::toString() const {
+    return std::to_string(_value);
+}
+
+template<>
+inline std::string VAny::Model<long>::toString() const {
+    return std::to_string(_value);
+}
+
+template<>
+inline std::string VAny::Model<unsigned long>::toString() const {
+    return std::to_string(_value);
+}
+
+template<>
+inline std::string VAny::Model<long long>::toString() const {
+    return std::to_string(_value);
+}
+
+template<>
+inline std::string VAny::Model<unsigned long long>::toString() const {
+    return std::to_string(_value);
+}
+
+template<>
+inline std::string VAny::Model<float>::toString() const {
+    return std::to_string(_value);
+}
+
+template<>
+inline std::string VAny::Model<double>::toString() const {
+    return std::to_string(_value);
+}
+
+template<>
+inline std::string VAny::Model<bool>::toString() const {
+    return _value ? "true" : "false";
+}
+
+template<>
+inline std::string VAny::Model<std::string>::toString() const {
+    return _value;
+}
+
+template<>
+inline std::string VAny::Model<const char*>::toString() const {
+    return _value ? _value : "";
+}
+
+template<>
+inline std::string VAny::Model<VString>::toString() const {
+    return _value.toStdString();
+} 
