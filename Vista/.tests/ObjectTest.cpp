@@ -14,51 +14,71 @@ VButton::~VButton() {
 }
 
 void VButton::click(const int x, const int y) {
-    std::cout << "Button clicked at (" << x << ", " << y << ")!\n";
+    VPrint("Button clicked at (", x, ", ", y, ")!");
     clicked.emit(x, y);
 }
 
 void onButtonClicked(const int x, const int y) {
-    std::cout << "Button was clicked at (" << x << ", " << y << ") (slot 1)!\n";
+    VPrint("Button was clicked at (", x, ", ", y, ") (slot 1)!");
 }
 
 void anotherButtonClickedHandler(const int x, const int y) {
-    std::cout << "Button was clicked at (" << x << ", " << y << ") (slot 2)!\n";
+    VPrint("Button was clicked at (", x, ", ", y, ") (slot 2)!");
 }
 
 void onButtonDestroyFunc(const VObject* button)
 {
-    std::cout << "Button destroyed: " << button->getName() << std::endl;
+    VPrint("Button destroyed: ", button->getName());
 }
 
 void ObjectTest(){
-    VApplication app;
-    app.setName("Console Application");
+    VPrint("\n=== Starting Object Test ===");
+    
+    {  // Scope block to control object lifetime
+        VApplication app;
+        app.setName("Console Application");
+        VPrint("Created application: ", app.getName());
 
-    VButton button;
-    button.setName("Button 1");
-    button.setParent(&app);
+        VPrint("\nCreating buttons...");
+        VButton button;
+        button.setName("Button 1");
+        button.setParent(&app);
+        VPrint("Created ", button.getName());
 
-    VButton button2;
-    button2.setName("Button 2");
-    button2.setParent(&app);
+        VButton button2;
+        button2.setName("Button 2");
+        button2.setParent(&app);
+        VPrint("Created ", button2.getName());
 
-    VButton button3;
-    button3.setName("Button 3");
-    button3.setParent(&app);
+        VButton button3;
+        button3.setName("Button 3");
+        button3.setParent(&app);
+        VPrint("Created ", button3.getName());
 
-    button.onDestroyed(onButtonDestroyFunc);
-    button2.onDestroyed(onButtonDestroyFunc);
-    button3.onDestroyed(onButtonDestroyFunc);
+        VPrint("\nSetting up button handlers...");
+        button.onDestroyed(onButtonDestroyFunc);
+        button2.onDestroyed(onButtonDestroyFunc);
+        button3.onDestroyed(onButtonDestroyFunc);
 
+        button.clicked.connect(onButtonClicked);
+        button.clicked.connect(anotherButtonClickedHandler);
+        
+        VPrint("\nTesting button click...");
+        button.click(10, 20);
 
-    button.clicked.connect(onButtonClicked);
-    button.clicked.connect(anotherButtonClickedHandler);
-    button.click(10, 20);
+        VPrint("\nTesting parent-child relationships...");
+        VPrint("Button 1 memory: ", &button);
+        VPrint("Button 1 parent: ", button.getParent()->getName());
+        VPrint("Button 1 parent memory: ", button.getParent());
+        VPrint("App memory: ", &app);
 
-    button.setParent(&button);
-    std:: cout << "Button 1 memory: " << &button << std::endl;
-    std:: cout << "Button 1 parent: " << button.getParent()->getName() << std::endl;
-    std:: cout << "Button 1 parent: " << button.getParent() << std::endl;
-    std:: cout << "App memory: " << &app << std::endl;
+        VPrint("\nAttempting to set button as its own parent...");
+        button.setParent(&button);
+        
+        VPrint("\n=== Main Test Complete ===");
+        VPrint("\nObjects will now be destroyed. Watch for destruction messages:");
+        VPrint("-------------------------------------------------------------");
+    }  // Objects will be destroyed here
+    
+    VPrint("\n=== Object Test Complete ===\n");
 }

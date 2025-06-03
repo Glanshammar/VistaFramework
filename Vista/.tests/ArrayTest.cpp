@@ -1,65 +1,75 @@
 #include "ArrayTest.hpp"
+#include <VString>
 
+void ArrayTest() {
+    VPrint("\n=== Starting Array Test ===");
+    
+    VPrint("\nCreating array...");
+    VArray<int> arr;
+    VPrint("Array created with size: ", arr.size());
 
-void ArrayTest()
-{
-    VArray list(typeid(int));
-    list.append<int>(10);
-    list.append<int>(20);
-    list.append<int>(30);
-
-    VPrint("List size: ", list.size());
-
-    for (auto it = list.begin(); it != list.end(); ++it) {
-        VPrint(*it, " ");
+    VPrint("\nAdding elements...");
+    for (int i = 0; i < 5; i++) {
+        arr.append(i);
+        VPrint("Added element: ", i);
+        VPrint("Current size: ", arr.size());
     }
-    VPrint("--------------------------------");
 
-    list.removeItem(1);
-    VPrint("Removed item at index 1");
-
-    for (auto it = list.begin(); it != list.end(); ++it) {
-        VPrint(*it, " ");
+    VPrint("\nAccessing elements...");
+    for (int i = 0; i < arr.size(); i++) {
+        VPrint("Element at index ", i, ": ", arr[i]);
     }
-    VPrint("--------------------------------");
 
-    list.replace<int>(0, 100);
-    VPrint("After replacing first element with 100: ");
-    for (auto it = list.begin(); it != list.end(); ++it) {
-        VPrint(*it, " ");
+    VPrint("\nTesting iterator...");
+    for (const auto& element : arr) {
+        VPrint("Iterating element: ", element);
     }
-    VPrint("--------------------------------");
 
-    VPrint("List contains 100: ", list.contains<int>(100) ? "Yes" : "No");
-    VPrint("List contains 50: ", list.contains<int>(50) ? "Yes" : "No");
+    VPrint("\nTesting clear...");
+    arr.clear();
+    VPrint("After clear - Size: ", arr.size());
 
-    VPrint("--------------------------------");
-    VPrint("List size before clear: ", list.size());
-    VPrint("List is empty: ", list.empty() ? "Yes" : "No");
-    list.clear();
-    VPrint("List size after clear: ", list.size());
-    VPrint("List is empty: ", list.empty() ? "Yes" : "No");
-
-    list.append<int>(50);
-    list.append<int>(60);
-    list.append<int>(70);
-    VPrint("List after appending 50, 60, 70: ");
-    for (auto it = list.begin(); it != list.end(); ++it) {
-        VPrint(*it, " ");
+    VPrint("\nTesting append after clear...");
+    for (int i = 0; i < 3; i++) {
+        arr.append(42);
+        VPrint("Added element: ", 42);
     }
-    VPrint("--------------------------------");
+    VPrint("New size: ", arr.size());
 
-    list.removeFirst();
-    VPrint("List after removing first element: ");
-    for (auto it = list.begin(); it != list.end(); ++it) {
-        VPrint(*it, " ");
-    }
-    VPrint("--------------------------------");
+    VPrint("\nTesting contains...");
+    VPrint("Contains 42: ", arr.contains(42) ? "Yes" : "No");
+    VPrint("Contains 100: ", arr.contains(100) ? "Yes" : "No");
 
-    list.removeLast();
-    VPrint("List after removing last element: ");
-    for (auto it = list.begin(); it != list.end(); ++it) {
-        VPrint(*it, " ");
+    VPrint("\nTesting remove operations...");
+    VPrint("Size before removeFirst: ", arr.size());
+    arr.removeFirst();
+    VPrint("Size after removeFirst: ", arr.size());
+    
+    VPrint("Size before removeLast: ", arr.size());
+    arr.removeLast();
+    VPrint("Size after removeLast: ", arr.size());
+
+    VPrint("\nTesting string array...");
+    VArray<VString> strArr;
+    strArr.append("Hello 👋");
+    strArr.append("World 🌍");
+    strArr.append("from");
+    strArr.append("Vista");
+    strArr.append("🚀");
+    
+    VPrint("\nString array contents:");
+    for (int i = 0; i < strArr.size(); i++) {
+        VPrint("String at index ", i, ": ", strArr[i]);
     }
-    VPrint("--------------------------------");
+
+    VPrint("\nClearing arrays...");
+    strArr.clear();
+    arr.clear();
+    if (strArr.size() == 0 && arr.size() == 0) {
+        VPrint("Arrays cleared");
+    } else {
+        VPrint("Arrays not cleared");
+    }
+
+    VPrint("\n=== Array Test Complete ===\n");
 }
