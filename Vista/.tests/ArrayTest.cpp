@@ -13,25 +13,29 @@ void ArrayTest()
     for (auto it = list.begin(); it != list.end(); ++it) {
         VPrint(*it, " ");
     }
-    VPrint();
+    VPrint("--------------------------------");
 
     list.removeItem(1);
+    VPrint("Removed item at index 1");
 
     for (auto it = list.begin(); it != list.end(); ++it) {
         VPrint(*it, " ");
     }
-    VPrint();
+    VPrint("--------------------------------");
 
     list.replace<int>(0, 100);
     VPrint("After replacing first element with 100: ");
     for (auto it = list.begin(); it != list.end(); ++it) {
         VPrint(*it, " ");
     }
-    VPrint();
+    VPrint("--------------------------------");
 
     VPrint("List contains 100: ", list.contains<int>(100) ? "Yes" : "No");
     VPrint("List contains 50: ", list.contains<int>(50) ? "Yes" : "No");
 
+    VPrint("--------------------------------");
+    VPrint("List size before clear: ", list.size());
+    VPrint("List is empty: ", list.empty() ? "Yes" : "No");
     list.clear();
     VPrint("List size after clear: ", list.size());
     VPrint("List is empty: ", list.empty() ? "Yes" : "No");
@@ -43,19 +47,19 @@ void ArrayTest()
     for (auto it = list.begin(); it != list.end(); ++it) {
         VPrint(*it, " ");
     }
-    VPrint();
+    VPrint("--------------------------------");
 
     list.removeFirst();
     VPrint("List after removing first element: ");
     for (auto it = list.begin(); it != list.end(); ++it) {
         VPrint(*it, " ");
     }
-    VPrint();
+    VPrint("--------------------------------");
 
     list.removeLast();
     VPrint("List after removing last element: ");
     for (auto it = list.begin(); it != list.end(); ++it) {
         VPrint(*it, " ");
     }
-    VPrint();
+    VPrint("--------------------------------");
 }
