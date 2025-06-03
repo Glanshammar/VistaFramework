@@ -91,3 +91,102 @@ public:
 private:
     std::vector<T> _data;
 };
+
+template<typename T>
+inline VArray<T>::VArray() = default;
+
+template<typename T>
+inline VArray<T>::~VArray() = default;
+
+template<typename T>
+void VArray<T>::append(const T& value) {
+    _data.push_back(value);
+}
+
+template<typename T>
+T& VArray<T>::at(int index) {
+    if (index < 0 || index >= static_cast<int>(_data.size())) {
+        throw std::out_of_range("Index out of range");
+    }
+    return _data[index];
+}
+
+template<typename T>
+const T& VArray<T>::at(int index) const {
+    if (index < 0 || index >= static_cast<int>(_data.size())) {
+        throw std::out_of_range("Index out of range");
+    }
+    return _data[index];
+}
+
+template<typename T>
+T& VArray<T>::operator[](int index) {
+    return at(index);
+}
+
+template<typename T>
+const T& VArray<T>::operator[](int index) const {
+    return at(index);
+}
+
+template<typename T>
+bool VArray<T>::contains(const T& value) const {
+    return std::find(_data.begin(), _data.end(), value) != _data.end();
+}
+
+template<typename T>
+void VArray<T>::removeItem(int index) {
+    if (index < 0 || index >= static_cast<int>(_data.size())) {
+        throw std::out_of_range("Index out of range");
+    }
+    _data.erase(_data.begin() + index);
+}
+
+template<typename T>
+void VArray<T>::clear() {
+    _data.clear();
+}
+
+template<typename T>
+bool VArray<T>::empty() const {
+    return _data.empty();
+}
+
+template<typename T>
+void VArray<T>::removeFirst() {
+    if (!empty()) {
+        removeItem(0);
+    }
+}
+
+template<typename T>
+void VArray<T>::removeLast() {
+    if (!empty()) {
+        removeItem(_data.size() - 1);
+    }
+}
+
+template<typename T>
+int VArray<T>::size() const {
+    return static_cast<int>(_data.size());
+}
+
+template<typename T>
+typename VArray<T>::iterator VArray<T>::begin() {
+    return _data.begin();
+}
+
+template<typename T>
+typename VArray<T>::iterator VArray<T>::end() {
+    return _data.end();
+}
+
+template<typename T>
+typename VArray<T>::const_iterator VArray<T>::begin() const {
+    return _data.begin();
+}
+
+template<typename T>
+typename VArray<T>::const_iterator VArray<T>::end() const {
+    return _data.end();
+}
