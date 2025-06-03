@@ -11,6 +11,14 @@ endif()
 project(VistaFramework)
 
 set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Add atomic support
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_compile_options(-pthread)
+endif()
+
 set(PROJECT_ROOT .)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake")
 
@@ -96,7 +104,6 @@ endif()
 set(VistaCoreFiles
     "Vista/Core/Application/VApplication.cpp" "Vista/Core/Application/VApplication.hpp"
     "Vista/Core/Application/VConsole.cpp" "Vista/Core/Application/VConsole.hpp"
-    "Vista/Core/Application/VEvent.cpp" "Vista/Core/Application/VEvent.hpp"
     "Vista/Core/Application/VEventLoop.cpp" "Vista/Core/Application/VEventLoop.hpp"
     "Vista/Core/VObject.cpp" "Vista/Core/VObject.hpp"
     "Vista/Core/VThread.cpp" "Vista/Core/VThread.hpp"
