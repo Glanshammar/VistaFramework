@@ -125,7 +125,7 @@ set(VistaSerialsFiles
 )
 
 add_library(VistaFramework
-    STATIC
+    SHARED
     ${VistaCoreFiles}
     ${VistaGraphicsFiles}
     ${VistaSerialsFiles}
