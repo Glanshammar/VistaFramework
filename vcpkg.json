@@ -4,11 +4,29 @@
   "description": "Vista Framework - A C++ application framework",
   "homepage": "https://github.com/Glanshammar/VistaFramework",
   "dependencies": [
+    {
+      "name": "poco",
+      "features": [
+        "util",
+        "xml",
+        "json",
+        "net",
+        "netssl",
+        "crypto",
+        "data",
+        "zip",
+        "pdf",
+        "mongodb",
+        "redis",
+        "jwt",
+        "prometheus"
+      ]
+    },
     "libxml2",
     "libssh2",
     "curl",
     "openssl",
-    "poco"
+    "expat"
   ],
   "builtin-baseline": "3f8078010e5ec665602f564df755e41479aafd73"
 }

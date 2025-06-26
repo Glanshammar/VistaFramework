@@ -26,9 +26,29 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake")
 set(VCPKG_INSTALLED_DIR "${CMAKE_BINARY_DIR}/vcpkg_installed")
 message(STATUS "Looking for packages in: ${VCPKG_INSTALLED_DIR}")
 
+
+include(FetchContent)
+
+# Fetch STB
+FetchContent_Declare(
+        stb
+        GIT_REPOSITORY https://github.com/nothings/stb.git
+        GIT_TAG        master
+)
+
+FetchContent_MakeAvailable(stb)
+
+if (stb_SOURCE_DIR)
+    message(STATUS "stb successfully downloaded to: ${stb_SOURCE_DIR}")
+else()
+    message(FATAL_ERROR "Failed to download stb!")
+endif()
+
 # Include directories
-include_directories("Vista/include/Vista")
-include_directories("Vista/include/stb/") #Download STB from https://github.com/nothings/stb, and extract to include folder ./Vista/include/stb/
+include_directories(
+        "Vista/include/Vista"
+        ${stb_SOURCE_DIR}
+)
 
 
 include(FindVulkan)
@@ -41,7 +61,6 @@ if(NOT Vulkan_FOUND)
     )
 else()
     include_directories(${Vulkan_INCLUDE_DIR})
-    # Create a proper Vulkan interface
     add_library(Vulkan::Vulkan INTERFACE IMPORTED GLOBAL)
     set_target_properties(Vulkan::Vulkan PROPERTIES
         INTERFACE_INCLUDE_DIRECTORIES "${Vulkan_INCLUDE_DIR}"
